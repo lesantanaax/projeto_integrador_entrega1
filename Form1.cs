@@ -68,6 +68,42 @@ namespace projeto_integrador_entrega1
             }
         }
 
-       
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string nome = textBox2.Text;
+            string senha = textBox3.Text;
+            string grupo = textBox4.Text;
+
+            if (string.IsNullOrEmpty(nome))
+            {
+                MessageBox.Show("Informe o nome da partida.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string retorno = Jogo.CriarPartida(nome, senha, grupo);
+            retorno = retorno.Replace("\r", "");
+
+
+            if (retorno == null)
+            {
+                MessageBox.Show("Resposta inválida do servidor.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (retorno.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("Ocorreu um erro: " + retorno, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            MessageBox.Show("Partida criada: " + retorno, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            button1_Click(null, null); 
+
+            textBox2.Clear();
+            textBox3.Clear();
+            textBox4.Clear();
+        }
+
+      
     }
 }
