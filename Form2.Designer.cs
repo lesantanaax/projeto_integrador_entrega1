@@ -28,30 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.txtnome = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
             this.txtsenha = new System.Windows.Forms.TextBox();
-            this.txtgrupo = new System.Windows.Forms.TextBox();
             this.Btnentrar = new System.Windows.Forms.Button();
             this.btncriar = new System.Windows.Forms.Button();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.txtnomedapartida = new System.Windows.Forms.TextBox();
+            this.lblNomeJogador = new System.Windows.Forms.Label();
+            this.nomePartida = new System.Windows.Forms.Label();
+            this.senha = new System.Windows.Forms.Label();
+            this.lblLobby = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.textBox1.Font = new System.Drawing.Font("Rockwell", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(269, 97);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(280, 39);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "LOBBY DRAFTOSSAURUS";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // txtnome
             // 
@@ -62,42 +48,6 @@
             this.txtnome.Size = new System.Drawing.Size(182, 32);
             this.txtnome.TabIndex = 15;
             // 
-            // textBox2
-            // 
-            this.textBox2.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.textBox2.Font = new System.Drawing.Font("Rockwell", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(51, 205);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(230, 35);
-            this.textBox2.TabIndex = 16;
-            this.textBox2.Text = "NOME DO JOGADOR :";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-            // 
-            // textBox3
-            // 
-            this.textBox3.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.textBox3.Font = new System.Drawing.Font("Rockwell", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox3.Location = new System.Drawing.Point(112, 317);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 30);
-            this.textBox3.TabIndex = 17;
-            this.textBox3.Text = "SENHA";
-            this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
-            // 
-            // textBox5
-            // 
-            this.textBox5.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.textBox5.Font = new System.Drawing.Font("Rockwell", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox5.Location = new System.Drawing.Point(112, 372);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(100, 30);
-            this.textBox5.TabIndex = 18;
-            this.textBox5.Text = "GRUPO";
-            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // txtsenha
             // 
             this.txtsenha.Location = new System.Drawing.Point(313, 314);
@@ -107,19 +57,10 @@
             this.txtsenha.Size = new System.Drawing.Size(182, 32);
             this.txtsenha.TabIndex = 19;
             // 
-            // txtgrupo
-            // 
-            this.txtgrupo.Location = new System.Drawing.Point(313, 368);
-            this.txtgrupo.Margin = new System.Windows.Forms.Padding(2);
-            this.txtgrupo.Multiline = true;
-            this.txtgrupo.Name = "txtgrupo";
-            this.txtgrupo.Size = new System.Drawing.Size(182, 34);
-            this.txtgrupo.TabIndex = 20;
-            // 
             // Btnentrar
             // 
             this.Btnentrar.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.Btnentrar.Font = new System.Drawing.Font("Rockwell", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btnentrar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Btnentrar.Location = new System.Drawing.Point(632, 315);
             this.Btnentrar.Name = "Btnentrar";
             this.Btnentrar.Size = new System.Drawing.Size(81, 33);
@@ -131,7 +72,7 @@
             // btncriar
             // 
             this.btncriar.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.btncriar.Font = new System.Drawing.Font("Rockwell", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btncriar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btncriar.Location = new System.Drawing.Point(614, 372);
             this.btncriar.Name = "btncriar";
             this.btncriar.Size = new System.Drawing.Size(122, 54);
@@ -139,18 +80,6 @@
             this.btncriar.Text = "CRIAR PARTIDA";
             this.btncriar.UseVisualStyleBackColor = false;
             this.btncriar.Click += new System.EventHandler(this.btncriar_Click);
-            // 
-            // textBox4
-            // 
-            this.textBox4.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.textBox4.Font = new System.Drawing.Font("Rockwell", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox4.Location = new System.Drawing.Point(51, 260);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(230, 35);
-            this.textBox4.TabIndex = 23;
-            this.textBox4.Text = "NOME DA PARTIDA:";
-            this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtnomedapartida
             // 
@@ -161,6 +90,51 @@
             this.txtnomedapartida.Size = new System.Drawing.Size(182, 32);
             this.txtnomedapartida.TabIndex = 24;
             // 
+            // lblNomeJogador
+            // 
+            this.lblNomeJogador.AutoSize = true;
+            this.lblNomeJogador.BackColor = System.Drawing.SystemColors.Info;
+            this.lblNomeJogador.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNomeJogador.Location = new System.Drawing.Point(45, 211);
+            this.lblNomeJogador.Name = "lblNomeJogador";
+            this.lblNomeJogador.Size = new System.Drawing.Size(233, 25);
+            this.lblNomeJogador.TabIndex = 25;
+            this.lblNomeJogador.Text = "NOME DO JOGADOR :";
+            // 
+            // nomePartida
+            // 
+            this.nomePartida.AutoSize = true;
+            this.nomePartida.BackColor = System.Drawing.SystemColors.Info;
+            this.nomePartida.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nomePartida.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.nomePartida.Location = new System.Drawing.Point(66, 267);
+            this.nomePartida.Name = "nomePartida";
+            this.nomePartida.Size = new System.Drawing.Size(212, 25);
+            this.nomePartida.TabIndex = 26;
+            this.nomePartida.Text = "NOME DA PARTIDA:";
+            // 
+            // senha
+            // 
+            this.senha.AutoSize = true;
+            this.senha.BackColor = System.Drawing.SystemColors.Info;
+            this.senha.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.senha.Location = new System.Drawing.Point(194, 321);
+            this.senha.Name = "senha";
+            this.senha.Size = new System.Drawing.Size(84, 25);
+            this.senha.TabIndex = 27;
+            this.senha.Text = "SENHA";
+            // 
+            // lblLobby
+            // 
+            this.lblLobby.AutoSize = true;
+            this.lblLobby.BackColor = System.Drawing.SystemColors.Info;
+            this.lblLobby.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLobby.Location = new System.Drawing.Point(183, 75);
+            this.lblLobby.Name = "lblLobby";
+            this.lblLobby.Size = new System.Drawing.Size(418, 37);
+            this.lblLobby.TabIndex = 28;
+            this.lblLobby.Text = "LOBBY DRAFTOSSAURUS";
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -169,17 +143,15 @@
             this.BackgroundImage = global::projeto_integrador_entrega1.Properties.Resources.draftosaurus_spel_koning_van_het_oerwoud;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(805, 438);
+            this.Controls.Add(this.lblLobby);
+            this.Controls.Add(this.senha);
+            this.Controls.Add(this.nomePartida);
+            this.Controls.Add(this.lblNomeJogador);
             this.Controls.Add(this.txtnomedapartida);
-            this.Controls.Add(this.textBox4);
             this.Controls.Add(this.btncriar);
             this.Controls.Add(this.Btnentrar);
-            this.Controls.Add(this.txtgrupo);
             this.Controls.Add(this.txtsenha);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.txtnome);
-            this.Controls.Add(this.textBox1);
             this.Name = "Form2";
             this.Text = "Form2";
             this.ResumeLayout(false);
@@ -188,17 +160,14 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox txtnome;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox txtsenha;
-        private System.Windows.Forms.TextBox txtgrupo;
         private System.Windows.Forms.Button Btnentrar;
         private System.Windows.Forms.Button btncriar;
-        private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TextBox txtnomedapartida;
+        private System.Windows.Forms.Label lblNomeJogador;
+        private System.Windows.Forms.Label nomePartida;
+        private System.Windows.Forms.Label senha;
+        private System.Windows.Forms.Label lblLobby;
     }
 }

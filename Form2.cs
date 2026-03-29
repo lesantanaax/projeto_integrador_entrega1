@@ -27,7 +27,7 @@ namespace projeto_integrador_entrega1
             string nomeJogador = txtnome.Text;
             string nomePartida = txtnomedapartida.Text; // ← novo campo
             string senha = txtsenha.Text;
-            string grupo = txtgrupo.Text;
+            string grupo = "Colossais";
 
             if (string.IsNullOrEmpty(nomeJogador) || string.IsNullOrEmpty(nomePartida)
              || string.IsNullOrEmpty(senha) || string.IsNullOrEmpty(grupo))
@@ -69,7 +69,7 @@ namespace projeto_integrador_entrega1
         {
             string nomeJogador = txtnome.Text;
             string senha = txtsenha.Text;
-            string grupo = txtgrupo.Text;
+            string grupo = "Colossais";
 
             if (string.IsNullOrEmpty(nomeJogador) || string.IsNullOrEmpty(senha) || string.IsNullOrEmpty(grupo))
             {
