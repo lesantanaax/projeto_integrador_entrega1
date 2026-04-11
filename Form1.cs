@@ -238,7 +238,16 @@ namespace projeto_integrador_entrega1
             btnJogar_Click(sender, e);
         }
 
-        private void btnVerTabuleiro_Click(object sender, EventArgs e) => MostrarTabuleiro();
+        private void btnVerTabuleiro_Click(object sender, EventArgs e)
+        {
+            // troca simples para Form3 sem verificações
+            var f = new Form3();
+            f.StartPosition = FormStartPosition.CenterScreen;
+            f.ClientSize = new System.Drawing.Size(1041, 700);
+            this.Hide();
+            f.FormClosed += (s, args) => this.Show();
+            f.Show();
+        }
         private void btnAtualizarJogadores_Click(object sender, EventArgs e) => AtualizarJogadores();
 
         // ===================== LISTAGEM DE PARTIDAS =====================
