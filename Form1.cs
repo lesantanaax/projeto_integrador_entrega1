@@ -196,6 +196,11 @@ namespace projeto_integrador_entrega1
 
             string retorno = Jogo.Jogar(meuId, minhaSenha, codDino, codCercado);
             if (VerificarErro(retorno)) return;
+            Form4 f = (Form4)Application.OpenForms["Form4"];
+            if (f != null)
+            {
+                f.AtualizarMapa(meuId, minhaSenha);
+            }
 
             int novoTurno = Convert.ToInt32(retorno.Trim());
 
@@ -240,13 +245,21 @@ namespace projeto_integrador_entrega1
 
         private void btnVerTabuleiro_Click(object sender, EventArgs e)
         {
-            // troca simples para Form3 sem verificações
-            var f = new Form4();
-            f.StartPosition = FormStartPosition.CenterScreen;
-            f.ClientSize = new System.Drawing.Size(1041, 700);
-            this.Hide();
-            f.FormClosed += (s, args) => this.Show();
-            f.Show();
+            // Verifica se o Form4 já está aberto para não abrir vários
+            Form4 f = (Form4)Application.OpenForms["Form4"];
+            if (f == null)
+            {
+                f = new Form4();
+                f.Name = "Form4";
+                f.Show();
+            }
+            else
+            {
+                f.BringToFront();
+            }
+
+            // Passa os dados e atualiza os dinos
+            f.AtualizarMapa(meuId, minhaSenha);
         }
         private void btnAtualizarJogadores_Click(object sender, EventArgs e) => AtualizarJogadores();
 
@@ -307,10 +320,24 @@ namespace projeto_integrador_entrega1
 
         private void btnAdicionarJogador_Click(object sender, EventArgs e)
         {
-            Form2 novoJogador = new Form2(idPartidaSelecionada);
-            novoJogador.Show();
-        }
+            using (Form2 telaLogin = new Form2(idPartidaSelecionada))
+            {
+                if (telaLogin.ShowDialog() == DialogResult.OK)
+                {
+                    // Recupera os dados que o Form2 salvou no Tag
+                    string[] dados = telaLogin.Tag.ToString().Split(',');
+                    this.meuId = Convert.ToInt32(dados[0]);
+                    this.minhaSenha = dados[1];
+                    this.idPartidaSelecionada = Convert.ToInt32(dados[2]);
 
+                    lblMeuId.Text = "Meu ID: " + meuId;
+                    lblMinhaSenha.Text = "Minha Senha: " + minhaSenha;
+
+                    AtualizarJogadores();
+                    MessageBox.Show("Logado com sucesso!");
+                }
+            }
+        }
         // ===================== AUXILIARES =====================
 
         private void MostrarTabuleiro()
