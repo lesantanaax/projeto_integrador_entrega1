@@ -241,7 +241,7 @@ namespace projeto_integrador_entrega1
         private void btnVerTabuleiro_Click(object sender, EventArgs e)
         {
             // troca simples para Form3 sem verificações
-            var f = new Form3();
+            var f = new Form4();
             f.StartPosition = FormStartPosition.CenterScreen;
             f.ClientSize = new System.Drawing.Size(1041, 700);
             this.Hide();
