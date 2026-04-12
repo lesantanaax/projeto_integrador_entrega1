@@ -24,13 +24,13 @@ namespace projeto_integrador_entrega1
             var configuracaoCercados = new Dictionary<string, (Point Posicao, Size Tamanho)>
     {
         // Exemplo de ajuste (Você vai alterar os números testando no mapa)
-        { "CD", (new Point(150, 80),  new Size(120, 100)) },
-        { "FI", (new Point(400, 80),  new Size(180, 120)) },
-        { "IS", (new Point(700, 150), new Size(60, 60))   }, // Ilha é pequena
-        { "MT", (new Point(150, 300), new Size(200, 150)) },
-        { "PA", (new Point(400, 300), new Size(160, 120)) },
-        { "RI", (new Point(300, 500), new Size(400, 80))  }, // Rio é largo e baixo
-        { "RS", (new Point(700, 400), new Size(100, 150)) }
+        { "CD", (new Point(618, 283),  new Size(349, 163)) },
+        { "FI", (new Point(62, 34),  new Size(340, 174)) },
+        { "IS", (new Point(769, 452), new Size(220, 146))   }, // Ilha é pequena
+        { "MT", (new Point(49, 253), new Size(268, 167)) },
+        { "PA", (new Point(120, 468), new Size(258, 188)) },
+        { "RI", (new Point(502, 527), new Size(181, 92))  }, // Rio é largo e baixo
+        { "RS", (new Point(682, 70), new Size(147, 93)) }
     };
 
             foreach (var config in configuracaoCercados)
