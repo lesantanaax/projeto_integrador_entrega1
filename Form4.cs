@@ -20,34 +20,42 @@ namespace projeto_integrador_entrega1
 
         private void CriarFields()
         {
-            // Lista de códigos dos cercados
-            string[] codigos = { "CD", "FI", "IS", "MT", "PA", "RI", "RS" };
+            // Criamos uma estrutura que guarda Posição e Tamanho para cada código
+            var configuracaoCercados = new Dictionary<string, (Point Posicao, Size Tamanho)>
+    {
+        // Exemplo de ajuste (Você vai alterar os números testando no mapa)
+        { "CD", (new Point(150, 80),  new Size(120, 100)) },
+        { "FI", (new Point(400, 80),  new Size(180, 120)) },
+        { "IS", (new Point(700, 150), new Size(60, 60))   }, // Ilha é pequena
+        { "MT", (new Point(150, 300), new Size(200, 150)) },
+        { "PA", (new Point(400, 300), new Size(160, 120)) },
+        { "RI", (new Point(300, 500), new Size(400, 80))  }, // Rio é largo e baixo
+        { "RS", (new Point(700, 400), new Size(100, 150)) }
+    };
 
-            int xInicial = 50; // Posição temporária
-            int yInicial = 50;
-
-            foreach (string cod in codigos)
+            foreach (var config in configuracaoCercados)
             {
-                // Criamos um FlowLayoutPanel para cada cercado
-                // Ele organiza os dinossauros automaticamente um ao lado do outro
+                string cod = config.Key;
+                Point pos = config.Value.Posicao;
+                Size tam = config.Value.Tamanho;
+
                 FlowLayoutPanel field = new FlowLayoutPanel();
                 field.Name = "field_" + cod;
-                field.Size = new Size(150, 100); // Tamanho da área do cercado
-                field.Location = new Point(xInicial, yInicial);
-                field.BorderStyle = BorderStyle.FixedSingle; // BORDA PARA ENXERGAR
-                field.BackColor = Color.FromArgb(100, Color.White); // Fundo semi-transparente
-                field.AutoScroll = false;
+                field.Location = pos;
+                field.Size = tam; // AQUI aplicamos o tamanho individual
 
-                // Label para identificar o cercado enquanto você mapeia
+                // Mantemos as bordas e labels para você mapear agora
+                field.BorderStyle = BorderStyle.FixedSingle;
+                field.BackColor = Color.FromArgb(100, Color.Red);
+                field.FlowDirection = FlowDirection.LeftToRight; // Organiza os dinos em linha
+                field.WrapContents = true; // Se não couber na linha, pula para baixo
+
                 Label lbl = new Label { Text = cod, AutoSize = true, BackColor = Color.Yellow };
                 field.Controls.Add(lbl);
 
                 this.Controls.Add(field);
+                field.BringToFront();
                 cercadosVisuais.Add(cod, field);
-
-                // Move a posição do próximo field para não ficarem um em cima do outro no início
-                xInicial += 160;
-                if (xInicial > 800) { xInicial = 50; yInicial += 110; }
             }
         }
 
