@@ -86,8 +86,8 @@ namespace projeto_integrador_entrega1
 
                         // Mapeamento dos nomes das imagens no seu Resource
                         string nomeImagem = ObterNomeResource(codDino);
-                        pb.Image = (Image)Properties.Resources.ResourceManager.GetObject(nomeImagem);
-
+                        //pb.Image = (Image)Properties.Resources.ResourceManager.GetObject(nomeImagem);
+                        pb.Image = Image.FromFile(nomeImagem);
                         cercadosVisuais[codCercado].Controls.Add(pb);
                     }
                 }
@@ -96,14 +96,16 @@ namespace projeto_integrador_entrega1
 
         private string ObterNomeResource(string cod)
         {
+            string pastaResources = @"C:\Users\bruno\source\repos\projeto_integrador_entrega1\Resources\";
+
             switch (cod)
             {
-                case "Br": return "braquiossauro";
-                case "Ep": return "espinossauro";
-                case "Et": return "estegossauro";
-                case "Pa": return "parassaurolofo";
-                case "Ti": return "tiranossauro";
-                case "Tr": return "triceratops";
+                case "Br": return pastaResources + "braquiossauro.png";
+                case "Ep": return pastaResources + "espinossauro.png";
+                case "Et": return pastaResources + "estegossauro.png";
+                case "Pa": return pastaResources + "parassaurolofo.png";
+                case "Ti": return pastaResources + "tiranossauro.png";
+                case "Tr": return pastaResources + "triceratops.png";
                 default: return "";
             }
         }

@@ -32,10 +32,11 @@
             // 
             // Form4
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::projeto_integrador_entrega1.Properties.Resources.tabuleiro;
-            this.ClientSize = new System.Drawing.Size(1041, 693);
+            this.ClientSize = new System.Drawing.Size(1041, 668);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form4";
             this.Text = "Form4";
             this.ResumeLayout(false);
