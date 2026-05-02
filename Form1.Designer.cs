@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.listBoxPartidas = new System.Windows.Forms.ListBox();
             this.lblNomePartida = new System.Windows.Forms.Label();
@@ -60,6 +61,7 @@
             this.btnAdicionarJogador = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtTabuleiro = new System.Windows.Forms.TextBox();
+            this.tmrPrincipal = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -479,6 +481,7 @@
         private System.Windows.Forms.Button btnAdicionarJogador;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtTabuleiro;
+        private System.Windows.Forms.Timer tmrPrincipal;
     }
 }
 

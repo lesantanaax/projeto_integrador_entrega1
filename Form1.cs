@@ -85,6 +85,7 @@ namespace projeto_integrador_entrega1
 
             lblTurnoInfo.Text = $"Turno 1 | Dado com: {nomeJogador} | Condição: {nomeFace}";
             AtualizarJogadores();
+            tmrPrincipal.Start();
         }
 
         private void btnVerificarTurno_Click(object sender, EventArgs e)
@@ -433,8 +434,13 @@ namespace projeto_integrador_entrega1
             if (retorno.StartsWith("ERRO")) return;
 
             listBoxJogadores.Items.Clear();
-            foreach (string j in retorno.Replace("\r", "").Trim().Split('\n'))
-                if (!string.IsNullOrEmpty(j)) listBoxJogadores.Items.Add(j);
+            foreach (string j in retorno.Replace("\r", "").Trim().Split('\n')) {
+                if (string.IsNullOrEmpty(j)) continue;
+                string[] dados = j.Split(',');
+                string statusTexto = (dados.Length > 2 && dados[2].Trim() == "J") ? "✅" : "⏳";
+                listBoxJogadores.Items.Add($"{statusTexto} {dados[1].Trim()}");
+            }
+                
         }
 
         private bool VerificarErro(string retorno)
@@ -459,6 +465,109 @@ namespace projeto_integrador_entrega1
         private void cmbCercado_SelectedIndexChanged(object sender, EventArgs e) { }
         private void lblNomePartida_Click(object sender, EventArgs e) { }
 
+        private void tmrPrincipal_Tick(object sender, EventArgs e)
+        {
+            string retorno = Jogo.VerificarPartida(idPartidaSelecionada);
+            if (retorno.StartsWith("ERRO")) return;
+
+            string[] dados = retorno.Replace("\r", "").Split(',');
+            int idQuemJoga = Convert.ToInt32(dados[3]);
+            string statusPartida = dados[0];
+
+            AtualizarJogadores();
+
+            if (Application.OpenForms["Form4"] is Form4 f4)
+            {
+                f4.AtualizarMapa(meuId, minhaSenha);
+            }
+            if (statusPartida == "J" && idQuemJoga == meuId)
+            {
+                
+                tmrPrincipal.Stop();
+
+                RealizarJogadaAutomatica();
+
+                tmrPrincipal.Start();
+            }
+        }
+
+        private void RealizarCicloDeJogada()
+        {
+            string mao = Jogo.ExibirMao(meuId, minhaSenha);
+            string tabuleiro = Jogo.ExibirTabuleiro(meuId, minhaSenha);
+            string codDino = mao.Split(',')[0].Trim();
+            string cercadoAlvo = "RI";
+            if (CercadoPermitidoPeloDado("IS") && CercadoVazio("IS"))
+            {
+                cercadoAlvo = "IS";
+            }
+            Jogo.Jogar(meuId, minhaSenha, codDino, cercadoAlvo); //
+        }
+
+        private void RealizarJogadaAutomatica()
+        {
+            // 1. Coleta de dados (Informações que preciso)
+            string maoRaw = Jogo.ExibirMao(meuId, minhaSenha);
+            string tabuleiroRaw = Jogo.ExibirTabuleiro(meuId, minhaSenha);
+
+            if (string.IsNullOrEmpty(maoRaw) || maoRaw.StartsWith("ERRO")) return;
+
+            // Extrai o primeiro dinossauro da mão (Ex: "Ti")
+            string codDino = maoRaw.Split(',')[0].Trim();
+            string cercadoAlvo = "RI"; // O Rio é o nosso "porto seguro" (sempre aceita)
+
+            // 2. Tomada de Decisão baseada no Dado (Algoritmo Não Aleatório)
+            // Se eu tiver o dado, posso jogar em qualquer lugar (exceto regras internas de cercado)
+            bool souEuComDado = (idJogadorComDado == meuId);
+
+            if (souEuComDado)
+            {
+                // Prioridade se eu tiver liberdade total: Ilha Solitária ou Rei da Selva
+                if (CercadoVazio("IS")) cercadoAlvo = "IS";
+                else if (CercadoVazio("RS")) cercadoAlvo = "RS";
+            }
+            else
+            {
+                // Switch baseado nas faces do dado para determinar ações correspondentes
+                switch (faceDadoAtual)
+                {
+                    case "AL": // Praça de Alimentação -> Deve jogar na Ilha Solitária
+                        if (CercadoVazio("IS")) cercadoAlvo = "IS";
+                        break;
+
+                    case "FL": // Floresta -> Lado Verde (FI ou MT)
+                        cercadoAlvo = "FI"; // Tenta Floresta da Igualdade
+                        break;
+
+                    case "PR": // Pradaria -> Lado Amarelo (PA ou CD)
+                        cercadoAlvo = "PA"; // Tenta Pradaria do Amor
+                        break;
+
+                    case "WC": // Banheiros -> Lado dos Banheiros (RS)
+                        if (CercadoVazio("RS")) cercadoAlvo = "RS";
+                        break;
+
+                    case "TI": // Cuidado com o T-Rex -> Cercado sem T-Rex
+                               // O método CercadoSemTRex que você já tem será usado aqui
+                        if (CercadoSemTRex("CD")) cercadoAlvo = "CD";
+                        else if (CercadoSemTRex("PA")) cercadoAlvo = "PA";
+                        break;
+
+                    case "VZ": // Cercado Vazio -> Qualquer um vazio
+                        if (CercadoVazio("FI")) cercadoAlvo = "FI";
+                        else if (CercadoVazio("MT")) cercadoAlvo = "MT";
+                        break;
+                }
+            }
+
+            // 3. Execução (Chamo "Jogar")
+            // Se a lógica acima não encontrar um cercado ideal, o alvo permanece "RI" (Rio)
+            string resultado = Jogo.Jogar(meuId, minhaSenha, codDino, cercadoAlvo);
+
+            // 4. Pós-jogada: Atualiza o Mapa Visual no Form4
+            Form4 f4 = (Form4)Application.OpenForms["Form4"];
+            if (f4 != null) f4.AtualizarMapa(meuId, minhaSenha);
+        }
     }
 }
 
