@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.listBoxPartidas = new System.Windows.Forms.ListBox();
             this.lblNomePartida = new System.Windows.Forms.Label();
@@ -54,22 +54,15 @@
             this.label12 = new System.Windows.Forms.Label();
             this.btnCarregarMao = new System.Windows.Forms.Button();
             this.btnJogar = new System.Windows.Forms.Button();
-            this.txtTabuleiro = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.btnVerTabuleiro = new System.Windows.Forms.Button();
             this.btnIniciar = new System.Windows.Forms.Button();
             this.btnAdicionarJogador = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtTabuleiro = new System.Windows.Forms.TextBox();
+            this.tmrPrincipal = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(34, 288);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(147, 217);
-            this.textBox1.TabIndex = 0;
             // 
             // button1
             // 
@@ -91,7 +84,7 @@
             this.listBoxPartidas.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxPartidas.FormattingEnabled = true;
             this.listBoxPartidas.ItemHeight = 15;
-            this.listBoxPartidas.Location = new System.Drawing.Point(14, 274);
+            this.listBoxPartidas.Location = new System.Drawing.Point(10, 280);
             this.listBoxPartidas.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxPartidas.Name = "listBoxPartidas";
             this.listBoxPartidas.Size = new System.Drawing.Size(194, 244);
@@ -151,7 +144,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(795, 457);
+            this.label4.Location = new System.Drawing.Point(17, 72);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(0, 13);
@@ -184,7 +177,7 @@
             // 
             // btnVerMao
             // 
-            this.btnVerMao.Location = new System.Drawing.Point(517, 457);
+            this.btnVerMao.Location = new System.Drawing.Point(470, 457);
             this.btnVerMao.Name = "btnVerMao";
             this.btnVerMao.Size = new System.Drawing.Size(75, 23);
             this.btnVerMao.TabIndex = 21;
@@ -215,18 +208,17 @@
             // lstMao
             // 
             this.lstMao.FormattingEnabled = true;
-            this.lstMao.Location = new System.Drawing.Point(378, 360);
+            this.lstMao.Location = new System.Drawing.Point(331, 360);
             this.lstMao.Name = "lstMao";
             this.lstMao.Size = new System.Drawing.Size(377, 82);
             this.lstMao.TabIndex = 24;
-            //this.lstMao.SelectedIndexChanged += new System.EventHandler(this.lstMao_SelectedIndexChanged);
             // 
             // lblinfot
             // 
             this.lblinfot.AutoSize = true;
             this.lblinfot.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblinfot.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblinfot.Location = new System.Drawing.Point(11, 13);
+            this.lblinfot.Location = new System.Drawing.Point(675, 262);
             this.lblinfot.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblinfot.Name = "lblinfot";
             this.lblinfot.Size = new System.Drawing.Size(147, 16);
@@ -238,7 +230,7 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label11.Location = new System.Drawing.Point(494, 329);
+            this.label11.Location = new System.Drawing.Point(447, 329);
             this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(115, 16);
@@ -249,7 +241,7 @@
             // lblTurnoInfo
             // 
             this.lblTurnoInfo.AutoSize = true;
-            this.lblTurnoInfo.Location = new System.Drawing.Point(150, 52);
+            this.lblTurnoInfo.Location = new System.Drawing.Point(814, 301);
             this.lblTurnoInfo.Name = "lblTurnoInfo";
             this.lblTurnoInfo.Size = new System.Drawing.Size(31, 13);
             this.lblTurnoInfo.TabIndex = 28;
@@ -267,7 +259,7 @@
             // 
             // btnVerificarTurno
             // 
-            this.btnVerificarTurno.Location = new System.Drawing.Point(14, 43);
+            this.btnVerificarTurno.Location = new System.Drawing.Point(678, 292);
             this.btnVerificarTurno.Name = "btnVerificarTurno";
             this.btnVerificarTurno.Size = new System.Drawing.Size(115, 31);
             this.btnVerificarTurno.TabIndex = 30;
@@ -342,14 +334,6 @@
             this.btnJogar.UseVisualStyleBackColor = true;
             this.btnJogar.Click += new System.EventHandler(this.btnJogar_Click);
             // 
-            // txtTabuleiro
-            // 
-            this.txtTabuleiro.Location = new System.Drawing.Point(316, 79);
-            this.txtTabuleiro.Multiline = true;
-            this.txtTabuleiro.Name = "txtTabuleiro";
-            this.txtTabuleiro.Size = new System.Drawing.Size(293, 168);
-            this.txtTabuleiro.TabIndex = 38;
-            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -392,7 +376,7 @@
             // 
             // btnAdicionarJogador
             // 
-            this.btnAdicionarJogador.Location = new System.Drawing.Point(760, 473);
+            this.btnAdicionarJogador.Location = new System.Drawing.Point(773, 491);
             this.btnAdicionarJogador.Name = "btnAdicionarJogador";
             this.btnAdicionarJogador.Size = new System.Drawing.Size(115, 32);
             this.btnAdicionarJogador.TabIndex = 43;
@@ -400,12 +384,31 @@
             this.btnAdicionarJogador.UseVisualStyleBackColor = true;
             this.btnAdicionarJogador.Click += new System.EventHandler(this.btnAdicionarJogador_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(14, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(171, 31);
+            this.label1.TabIndex = 44;
+            this.label1.Text = "COLOSSAIS";
+            // 
+            // txtTabuleiro
+            // 
+            this.txtTabuleiro.Location = new System.Drawing.Point(316, 79);
+            this.txtTabuleiro.Multiline = true;
+            this.txtTabuleiro.Name = "txtTabuleiro";
+            this.txtTabuleiro.Size = new System.Drawing.Size(293, 168);
+            this.txtTabuleiro.TabIndex = 38;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Aquamarine;
             this.ClientSize = new System.Drawing.Size(900, 535);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAdicionarJogador);
             this.Controls.Add(this.btnIniciar);
             this.Controls.Add(this.btnVerTabuleiro);
@@ -437,7 +440,6 @@
             this.Controls.Add(this.lblNomePartida);
             this.Controls.Add(this.listBoxPartidas);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -447,8 +449,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListBox listBoxPartidas;
         private System.Windows.Forms.Label lblNomePartida;
@@ -474,12 +474,14 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button btnCarregarMao;
         private System.Windows.Forms.Button btnJogar;
-        private System.Windows.Forms.TextBox txtTabuleiro;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnVerTabuleiro;
         private System.Windows.Forms.Button btnIniciar;
         private System.Windows.Forms.Button btnAdicionarJogador;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtTabuleiro;
+        private System.Windows.Forms.Timer tmrPrincipal;
     }
 }
 

@@ -15,7 +15,6 @@ namespace projeto_integrador_entrega1
             InitializeComponent();
         }
 
-        // Construtor usado pelo btnAdicionarJogador do Form1
         public Form2(int idPartida) : this()
         {
             idPartidaSelecionada = idPartida;
@@ -25,7 +24,7 @@ namespace projeto_integrador_entrega1
         private void btncriar_Click(object sender, EventArgs e)
         {
             string nomeJogador = txtnome.Text;
-            string nomePartida = txtnomedapartida.Text; // ← novo campo
+            string nomePartida = txtnomedapartida.Text;
             string senha = txtsenha.Text;
             string grupo = "Colossais";
 
@@ -36,7 +35,6 @@ namespace projeto_integrador_entrega1
                 return;
             }
 
-            // Nome da partida separado do nome do jogador
             string retornoCriacao = Jogo.CriarPartida(nomePartida, senha, grupo);
 
             if (retornoCriacao.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase))
@@ -59,9 +57,8 @@ namespace projeto_integrador_entrega1
             meuId = Convert.ToInt32(dados[0]);
             minhaSenha = dados[1].Trim();
 
-            Form1 telaJogo = new Form1(meuId, minhaSenha, idPartidaSelecionada);
-            telaJogo.Show();
-            this.Hide();
+            // ALTERAÇÃO AQUI: Em vez de criar Form1, devolvemos os dados
+            FinalizarLogin();
         }
 
         // ===================== ENTRAR NA PARTIDA =====================
@@ -77,7 +74,6 @@ namespace projeto_integrador_entrega1
                 return;
             }
 
-            // Se veio do btnAdicionarJogador, já tem o ID
             if (idPartidaSelecionada == 0)
                 idPartidaSelecionada = BuscarIdPartidaPorGrupo(grupo);
 
@@ -108,9 +104,16 @@ namespace projeto_integrador_entrega1
             meuId = Convert.ToInt32(dados[0]);
             minhaSenha = dados[1].Trim();
 
-            Form1 telaJogo = new Form1(meuId, minhaSenha, idPartidaSelecionada);
-            telaJogo.Show();
-            this.Hide();
+            // ALTERAÇÃO AQUI: Em vez de criar Form1, devolvemos os dados
+            FinalizarLogin();
+        }
+
+        // Método auxiliar para evitar repetição de código
+        private void FinalizarLogin()
+        {
+            this.Tag = $"{meuId},{minhaSenha},{idPartidaSelecionada}";
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         // ===================== AUXILIAR =====================
