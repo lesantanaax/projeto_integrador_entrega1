@@ -69,7 +69,7 @@
             this.button1.BackColor = System.Drawing.Color.Teal;
             this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button1.Location = new System.Drawing.Point(225, 284);
+            this.button1.Location = new System.Drawing.Point(86, 240);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(118, 36);
@@ -135,7 +135,7 @@
             this.listBoxJogadores.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxJogadores.FormattingEnabled = true;
             this.listBoxJogadores.ItemHeight = 15;
-            this.listBoxJogadores.Location = new System.Drawing.Point(10, 130);
+            this.listBoxJogadores.Location = new System.Drawing.Point(10, 118);
             this.listBoxJogadores.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxJogadores.Name = "listBoxJogadores";
             this.listBoxJogadores.Size = new System.Drawing.Size(139, 109);
@@ -168,7 +168,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label7.Location = new System.Drawing.Point(11, 100);
+            this.label7.Location = new System.Drawing.Point(11, 92);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(74, 16);
@@ -177,7 +177,7 @@
             // 
             // btnVerMao
             // 
-            this.btnVerMao.Location = new System.Drawing.Point(470, 457);
+            this.btnVerMao.Location = new System.Drawing.Point(344, 496);
             this.btnVerMao.Name = "btnVerMao";
             this.btnVerMao.Size = new System.Drawing.Size(75, 23);
             this.btnVerMao.TabIndex = 21;
@@ -208,9 +208,9 @@
             // lstMao
             // 
             this.lstMao.FormattingEnabled = true;
-            this.lstMao.Location = new System.Drawing.Point(331, 360);
+            this.lstMao.Location = new System.Drawing.Point(408, 360);
             this.lstMao.Name = "lstMao";
-            this.lstMao.Size = new System.Drawing.Size(377, 82);
+            this.lstMao.Size = new System.Drawing.Size(201, 82);
             this.lstMao.TabIndex = 24;
             // 
             // lblinfot
@@ -241,7 +241,7 @@
             // lblTurnoInfo
             // 
             this.lblTurnoInfo.AutoSize = true;
-            this.lblTurnoInfo.Location = new System.Drawing.Point(814, 301);
+            this.lblTurnoInfo.Location = new System.Drawing.Point(618, 334);
             this.lblTurnoInfo.Name = "lblTurnoInfo";
             this.lblTurnoInfo.Size = new System.Drawing.Size(31, 13);
             this.lblTurnoInfo.TabIndex = 28;
@@ -259,7 +259,7 @@
             // 
             // btnVerificarTurno
             // 
-            this.btnVerificarTurno.Location = new System.Drawing.Point(678, 292);
+            this.btnVerificarTurno.Location = new System.Drawing.Point(678, 287);
             this.btnVerificarTurno.Name = "btnVerificarTurno";
             this.btnVerificarTurno.Size = new System.Drawing.Size(115, 31);
             this.btnVerificarTurno.TabIndex = 30;
