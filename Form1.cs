@@ -1,5 +1,4 @@
-﻿
-using Draft;
+﻿using Draft;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,8 +14,7 @@ namespace projeto_integrador_entrega1
         private string faceDadoAtual = "";
         private int idJogadorComDado = 0;
         private int turnoAtual = 0;
-        private int ultimoTurnoJogado = -1; // controla para não jogar duas vezes no mesmo turno
-        private int tickCount = 0;          // contador de ticks para o log
+        private int tickCount = 0;
 
         private Dictionary<string, string> nomesFaces = new Dictionary<string, string>
         {
@@ -54,7 +52,6 @@ namespace projeto_integrador_entrega1
             InitializeComponent();
             label4.Text = Jogo.versao;
 
-            // Timer não conectado no Designer — conecta aqui
             tmrPrincipal.Interval = 5000;
             tmrPrincipal.Tick += new System.EventHandler(tmrPrincipal_Tick);
         }
@@ -70,45 +67,34 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
-        // INICIAR — valida se a partida já foi iniciada ou inicia agora
+        // INICIAR
         // ─────────────────────────────────────────────────────────────
         private void btnIniciar_Click_1(object sender, EventArgs e)
         {
-            // Tenta verificar se a partida já foi iniciada por outro jogador
+            // Verifica se a partida já está ativa antes de tentar iniciar
             string retornoVerif = Jogo.VerificarPartida(idPartidaSelecionada);
-
             bool partidaJaAtiva = !string.IsNullOrEmpty(retornoVerif)
                                   && !retornoVerif.StartsWith("ERRO")
                                   && retornoVerif.Contains(",");
 
             if (partidaJaAtiva)
             {
-                // Partida já iniciada — apenas entra no modo automático
                 string[] dadosVerif = retornoVerif.Replace("\r", "").Trim().Split(',');
-                if (dadosVerif.Length >= 5)
+                if (dadosVerif.Length >= 5 && dadosVerif[2].Trim() != "E")
                 {
-                    string statusVerif = dadosVerif[2].Trim();
-                    if (statusVerif == "E")
-                    {
-                        Log("⚠ Partida já encerrada. Não é possível entrar.");
-                        return;
-                    }
-
                     int.TryParse(dadosVerif[1].Trim(), out turnoAtual);
                     idJogadorComDado = Convert.ToInt32(dadosVerif[3].Trim());
                     faceDadoAtual = dadosVerif[4].Trim();
-                    ultimoTurnoJogado = -1;
-
-                    IniciarModoAutonomo("🔁 Partida já estava em andamento. Entrando no modo autônomo...");
+                    IniciarModoAutonomo("🔁 Partida já em andamento. Entrando no modo autônomo...");
                     return;
                 }
             }
 
-            // Partida ainda não iniciada — inicia agora
+            // Inicia a partida
             string retorno = Jogo.Iniciar(meuId, minhaSenha);
             if (VerificarErroSilencioso(retorno))
             {
-                // Pode ter falhado porque outro jogador já iniciou — tenta entrar mesmo assim
+                // Outro jogador pode ter iniciado — tenta entrar
                 retornoVerif = Jogo.VerificarPartida(idPartidaSelecionada);
                 if (!string.IsNullOrEmpty(retornoVerif) && !retornoVerif.StartsWith("ERRO"))
                 {
@@ -118,8 +104,7 @@ namespace projeto_integrador_entrega1
                         int.TryParse(dadosVerif[1].Trim(), out turnoAtual);
                         idJogadorComDado = Convert.ToInt32(dadosVerif[3].Trim());
                         faceDadoAtual = dadosVerif[4].Trim();
-                        ultimoTurnoJogado = -1;
-                        IniciarModoAutonomo("🔁 Outro jogador iniciou a partida. Entrando no modo autônomo...");
+                        IniciarModoAutonomo("🔁 Outro jogador iniciou. Entrando no modo autônomo...");
                         return;
                     }
                 }
@@ -134,7 +119,6 @@ namespace projeto_integrador_entrega1
                 faceDadoAtual = dados[1].Trim();
             }
             turnoAtual = 1;
-            ultimoTurnoJogado = -1;
 
             IniciarModoAutonomo("✅ Partida iniciada com sucesso!");
         }
@@ -145,12 +129,12 @@ namespace projeto_integrador_entrega1
             tickCount = 0;
 
             Log("═══════════════════════════════════════");
-            Log($"  COLOSSAIS — Sistema Autônomo");
+            Log("  COLOSSAIS — Sistema Autônomo");
             Log($"  Meu ID  : {meuId}");
             Log($"  Partida : {idPartidaSelecionada}");
             Log("═══════════════════════════════════════");
             Log(mensagem);
-            Log($"  Timer: 5 segundos | Aguardando...");
+            Log("  Intervalo: 5s | Aguardando primeiro tick...");
             Log("");
 
             btnIniciar.Enabled = false;
@@ -161,112 +145,97 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
-        // TIMER — coração do sistema, segue o fluxo do diagrama
+        // TIMER
         // ─────────────────────────────────────────────────────────────
         private void tmrPrincipal_Tick(object sender, EventArgs e)
         {
             tickCount++;
             string hora = DateTime.Now.ToString("HH:mm:ss");
-
             Log($"── TICK #{tickCount} [{hora}] ──────────────────────");
 
-            // PASSO 1: Verificar Vez — destrincha o retorno
+            // PASSO 1: VerificarPartida — estado geral da partida
             string retorno = Jogo.VerificarPartida(idPartidaSelecionada);
-
             if (string.IsNullOrEmpty(retorno) || retorno.StartsWith("ERRO"))
             {
-                Log($"  ⚠ VerificarPartida retornou: {retorno}");
-                Log($"  Aguardando próximo tick...");
+                Log($"  ⚠ VerificarPartida: {retorno}");
                 return;
             }
 
             string[] dados = retorno.Replace("\r", "").Trim().Split(',');
-            if (dados.Length < 5)
-            {
-                Log($"  ⚠ Retorno incompleto: \"{retorno}\"");
-                return;
-            }
+            if (dados.Length < 5) { Log($"  ⚠ Retorno incompleto: \"{retorno}\""); return; }
 
-            // Desmonta o retorno
-            string statusPartida = dados[2].Trim(); // A = andamento, E = encerrada
+            // Formato: StatusPartida, Turno, StatusTurno, IdJogadorComDado, FaceDado
+            string statusPartida = dados[0].Trim(); // J = jogando, E = encerrada
             int novoTurno;
             if (!int.TryParse(dados[1].Trim(), out novoTurno)) return;
 
+            string statusTurno = dados[2].Trim();   // A = aberto, F = fechado
             idJogadorComDado = Convert.ToInt32(dados[3].Trim());
             faceDadoAtual = dados[4].Trim();
 
-            // Detecta virada de turno
             if (novoTurno != turnoAtual)
             {
                 Log($"  🔄 Turno avançou: {turnoAtual} → {novoTurno}");
                 turnoAtual = novoTurno;
             }
 
-            string nomeJog = BuscarNomeJogador(idJogadorComDado);
+            string nomeDono = BuscarNomeJogador(idJogadorComDado);
             string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
-            bool ehMinhaVez = idJogadorComDado == meuId;
+            bool euTenhoDado = idJogadorComDado == meuId;
             bool partidaAtiva = statusPartida != "E";
 
-            // Log do estado atual
-            Log($"  Turno     : {turnoAtual}");
+            Log($"  Turno     : {turnoAtual} ({(statusTurno == "A" ? "aberto" : "fechado")})");
             Log($"  Status    : {(partidaAtiva ? "Em andamento" : "ENCERRADA")}");
             Log($"  Meu ID    : {meuId}");
-            Log($"  Com dado  : {nomeJog} (ID {idJogadorComDado})");
-            Log($"  Face dado : {nomeFace}");
-            Log($"  Minha vez : {(ehMinhaVez ? "✅ SIM" : "❌ NÃO")}");
-            Log($"  Últ. jog. : turno {ultimoTurnoJogado}");
+            Log($"  Dado com  : {nomeDono} (ID {idJogadorComDado})");
+            Log($"  Condição  : {nomeFace} {(euTenhoDado ? "★ (eu tenho — jogo livre)" : "")}");
 
-            // Atualiza label de turno
-            lblTurnoInfo.Text = $"Turno: {turnoAtual} | {(ehMinhaVez ? "★ MINHA VEZ" : $"Vez de {nomeJog}")} | {nomeFace} | {(partidaAtiva ? "Em andamento" : "Encerrada")}";
+            lblTurnoInfo.Text = $"Turno: {turnoAtual} | Dado: {nomeDono}{(euTenhoDado ? " ★" : "")} | {nomeFace} | {(partidaAtiva ? "Em andamento" : "Encerrada")}";
             AtualizarJogadores();
 
             if (Application.OpenForms["Form4"] is Form4 f4)
                 f4.AtualizarMapa(meuId, minhaSenha);
 
-            // Partida encerrada
             if (!partidaAtiva)
             {
                 tmrPrincipal.Stop();
                 Log("");
                 Log("🏁 PARTIDA ENCERRADA!");
-                Log("   Tabuleiro final:");
                 LogTabuleiro();
                 btnIniciar.Enabled = true;
                 return;
             }
 
-            // PASSO 2: É minha vez?
-            if (!ehMinhaVez)
+            // PASSO 2: VerificarTurno — checa se EU já joguei neste turno
+            // Retorno: StatusTurno, IdJogadorComDado, FaceDado, [IdJogador, CodDino, CodCercado, ...]
+            string retornoTurno = Jogo.VerificarTurno(idPartidaSelecionada, turnoAtual);
+            Log($"  VerificarTurno raw: \"{retornoTurno?.Trim()}\"");
+
+            bool euJaJoguei = EuJaJogueiNesTurno(retornoTurno);
+            Log($"  Eu já joguei : {(euJaJoguei ? "✅ SIM — aguardando outros" : "❌ NÃO — preciso jogar")}");
+
+            if (euJaJoguei)
             {
-                Log($"  ⏳ Não é minha vez. Aguardando {nomeJog} jogar...");
+                Log("  ⏳ Aguardando outros jogadores...");
                 LogTabuleiro();
                 Log("");
                 return;
             }
 
-            // Já joguei neste turno exato?
-            if (turnoAtual == ultimoTurnoJogado)
-            {
-                Log($"  ✔ Já joguei no turno {turnoAtual}. Aguardando virada...");
-                Log("");
-                return;
-            }
-
-            // ─── É MINHA VEZ E AINDA NÃO JOGUEI ───
+            // PASSO 3: Minha vez — busca informações e joga
             tmrPrincipal.Stop();
 
-            Log($"  ★ MINHA VEZ! Calculando jogada...");
+            Log($"  ★ JOGANDO! {(euTenhoDado ? "Livre (tenho o dado)" : $"Condição: {nomeFace}")}");
 
-            // PASSO 3: Busca informações
             string maoRaw = Jogo.ExibirMao(meuId, minhaSenha);
             var mao = ParsearMao(maoRaw);
             var tabuleiro = CarregarTabuleiro();
 
-            Log($"  Mão      : [{string.Join(", ", mao)}]");
+            Log($"  Mão: [{string.Join(", ", mao)}]");
 
             if (mao.Count == 0)
             {
-                Log("  ⚠ Mão vazia! Nada a jogar.");
+                Log("  ⚠ Mão vazia.");
                 tmrPrincipal.Start();
                 return;
             }
@@ -276,9 +245,9 @@ namespace projeto_integrador_entrega1
             string cercado = null;
             EscolherMelhorJogada(mao, tabuleiro, out codDino, out cercado);
 
-            string nomeDino = nomesDinos.ContainsKey(codDino) ? nomesDinos[codDino] : codDino;
-            string nomeCerc = nomesCercados.ContainsKey(cercado) ? nomesCercados[cercado] : cercado;
-            Log($"  Decisão  : {nomeDino} → {nomeCerc}");
+            string nomeD = nomesDinos.ContainsKey(codDino) ? nomesDinos[codDino] : codDino;
+            string nomeC = nomesCercados.ContainsKey(cercado) ? nomesCercados[cercado] : cercado;
+            Log($"  Decisão: {nomeD} → {nomeC}");
 
             // PASSO 5: Jogar
             string resultado = Jogo.Jogar(meuId, minhaSenha, codDino, cercado);
@@ -286,9 +255,8 @@ namespace projeto_integrador_entrega1
 
             if (!string.IsNullOrEmpty(resultado) && !resultado.StartsWith("ERRO"))
             {
-                ultimoTurnoJogado = turnoAtual;
-                lblTurnoInfo.Text = $"🤖 Turno {turnoAtual}: {nomeDino} → {nomeCerc}";
-                Log($"  ✅ Jogada registrada! Turno {turnoAtual} concluído.");
+                lblTurnoInfo.Text = $"🤖 Turno {turnoAtual}: {nomeD} → {nomeC}";
+                Log($"  ✅ Jogada registrada! Aguardando outros concluírem o turno {turnoAtual}...");
                 LogTabuleiro();
 
                 if (Application.OpenForms["Form4"] is Form4 f4b)
@@ -296,8 +264,7 @@ namespace projeto_integrador_entrega1
             }
             else
             {
-                Log($"  ❌ Erro na jogada — tentará novamente no próximo tick.");
-                // NÃO atualiza ultimoTurnoJogado para tentar de novo
+                Log($"  ❌ Erro: {resultado?.Trim()} — tentará no próximo tick.");
             }
 
             Log("");
@@ -305,27 +272,53 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
-        // LOG — exibe o tabuleiro atual no log
+        // Verifica na lista de jogadas do turno se meu ID já aparece
+        // Retorno do VerificarTurno:
+        //   linha 1: StatusTurno, IdComDado, FaceDado
+        //   linhas seguintes: IdJogador, CodDino, CodCercado
+        // ─────────────────────────────────────────────────────────────
+        private bool EuJaJogueiNesTurno(string retornoTurno)
+        {
+            if (string.IsNullOrEmpty(retornoTurno) || retornoTurno.StartsWith("ERRO"))
+                return false; // se não conseguiu verificar, tenta jogar
+
+            string[] linhas = retornoTurno.Replace("\r", "").Trim().Split('\n');
+
+            // A partir da segunda linha vêm as jogadas: IdJogador,CodDino,CodCercado
+            for (int i = 1; i < linhas.Length; i++)
+            {
+                string linha = linhas[i].Trim();
+                if (string.IsNullOrEmpty(linha)) continue;
+
+                string[] partes = linha.Split(',');
+                if (partes.Length < 1) continue;
+
+                int idNaLinha;
+                if (int.TryParse(partes[0].Trim(), out idNaLinha) && idNaLinha == meuId)
+                    return true; // meu ID está na lista de jogadas — já joguei
+            }
+
+            return false;
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // LOG
         // ─────────────────────────────────────────────────────────────
         private void LogTabuleiro()
         {
             var tab = CarregarTabuleiro();
             if (tab.Count == 0) return;
-
-            Log("  Tabuleiro atual:");
+            Log("  Tabuleiro:");
             foreach (var kv in tab)
             {
+                if (kv.Value.Count == 0) continue;
                 string nomeCerc = nomesCercados.ContainsKey(kv.Key) ? nomesCercados[kv.Key] : kv.Key;
-                var contagem = new Dictionary<string, int>();
-                foreach (string d in kv.Value)
+                var cont = new Dictionary<string, int>();
+                foreach (string d in kv.Value) { if (!cont.ContainsKey(d)) cont[d] = 0; cont[d]++; }
+                foreach (var dc in cont)
                 {
-                    if (!contagem.ContainsKey(d)) contagem[d] = 0;
-                    contagem[d]++;
-                }
-                foreach (var dc in contagem)
-                {
-                    string nomeDino = nomesDinos.ContainsKey(dc.Key) ? nomesDinos[dc.Key] : dc.Key;
-                    Log($"    {nomeCerc}: {nomeDino} x{dc.Value}");
+                    string nd = nomesDinos.ContainsKey(dc.Key) ? nomesDinos[dc.Key] : dc.Key;
+                    Log($"    {nomeCerc}: {nd} x{dc.Value}");
                 }
             }
         }
@@ -333,7 +326,6 @@ namespace projeto_integrador_entrega1
         private void Log(string msg)
         {
             txtTabuleiro.AppendText(msg + Environment.NewLine);
-            // Rola para o final automaticamente
             txtTabuleiro.SelectionStart = txtTabuleiro.Text.Length;
             txtTabuleiro.ScrollToCaret();
         }
@@ -345,7 +337,6 @@ namespace projeto_integrador_entrega1
         {
             var mao = new List<string>();
             if (string.IsNullOrEmpty(maoRaw) || maoRaw.StartsWith("ERRO")) return mao;
-
             foreach (string linha in maoRaw.Replace("\r", "").Trim().Split('\n'))
             {
                 if (string.IsNullOrEmpty(linha)) continue;
@@ -363,7 +354,6 @@ namespace projeto_integrador_entrega1
             var tabuleiro = new Dictionary<string, List<string>>();
             string raw = Jogo.ExibirTabuleiro(meuId, minhaSenha);
             if (string.IsNullOrEmpty(raw) || raw.StartsWith("ERRO")) return tabuleiro;
-
             foreach (string linha in raw.Replace("\r", "").Trim().Split('\n'))
             {
                 string[] p = linha.Trim().Split(',');
@@ -372,10 +362,8 @@ namespace projeto_integrador_entrega1
                 string dino = p[1].Trim();
                 int qtd;
                 if (!int.TryParse(p[2].Trim(), out qtd)) continue;
-                if (!tabuleiro.ContainsKey(cercado))
-                    tabuleiro[cercado] = new List<string>();
-                for (int i = 0; i < qtd; i++)
-                    tabuleiro[cercado].Add(dino);
+                if (!tabuleiro.ContainsKey(cercado)) tabuleiro[cercado] = new List<string>();
+                for (int i = 0; i < qtd; i++) tabuleiro[cercado].Add(dino);
             }
             return tabuleiro;
         }
@@ -412,14 +400,12 @@ namespace projeto_integrador_entrega1
         {
             string[] todos = { "IS", "RS", "MT", "FI", "CD", "PA" };
             var candidatos = new List<string>();
-
             foreach (string c in todos)
             {
                 if (!temDado && !CercadoPermitidoPeloDadoComTab(c, tab)) continue;
                 if (!CercadoAceitaDino(c, dino, tab)) continue;
                 candidatos.Add(c);
             }
-
             candidatos.Add("RI");
             return candidatos;
         }
@@ -487,7 +473,7 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
-        // BOTÕES MANUAIS — mantidos para compatibilidade com o Designer
+        // BOTÕES — mantidos para o Designer compilar
         // ─────────────────────────────────────────────────────────────
         private void btnVerificarTurno_Click(object sender, EventArgs e)
         {
@@ -498,7 +484,7 @@ namespace projeto_integrador_entrega1
             faceDadoAtual = dados[4].Trim();
             string nomeJogador = BuscarNomeJogador(idJogadorComDado);
             string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
-            lblTurnoInfo.Text = $"Turno: {dados[1].Trim()} | Dado com: {nomeJogador} | {nomeFace}";
+            lblTurnoInfo.Text = $"Turno: {dados[1].Trim()} | Dado: {nomeJogador} | {nomeFace}";
         }
 
         private void btnVerMao_Click(object sender, EventArgs e)
@@ -534,9 +520,6 @@ namespace projeto_integrador_entrega1
 
         private void btnAtualizarJogadores_Click(object sender, EventArgs e) => AtualizarJogadores();
 
-        // ─────────────────────────────────────────────────────────────
-        // LISTAGEM DE PARTIDAS
-        // ─────────────────────────────────────────────────────────────
         private void button1_Click(object sender, EventArgs e)
         {
             string retorno = Jogo.ListarPartidas("T");
@@ -616,8 +599,6 @@ namespace projeto_integrador_entrega1
             }
         }
 
-        private bool JogadaValida(string codCercado) => CercadoPermitidoPeloDado(codCercado);
-
         private bool CercadoSemTRex(string codCercado)
         {
             string raw = Jogo.ExibirTabuleiro(meuId, minhaSenha);
@@ -663,32 +644,29 @@ namespace projeto_integrador_entrega1
             {
                 if (string.IsNullOrEmpty(j)) continue;
                 string[] dados = j.Split(',');
-                string statusTexto = (dados.Length > 2 && dados[2].Trim() == "J") ? "✅" : "⏳";
-                listBoxJogadores.Items.Add($"{statusTexto} {dados[1].Trim()}");
+                string st = (dados.Length > 2 && dados[2].Trim() == "J") ? "✅" : "⏳";
+                listBoxJogadores.Items.Add($"{st} {dados[1].Trim()}");
             }
         }
 
-        // VerificarErro com MessageBox — para botões manuais
         private bool VerificarErro(string retorno)
         {
             if (string.IsNullOrEmpty(retorno)) return true;
             if (retorno.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show(retorno, "Erro do Servidor", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(retorno, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return true;
             }
             return false;
         }
 
-        // VerificarErro silencioso — para o motor autônomo (não abre MessageBox)
         private bool VerificarErroSilencioso(string retorno)
         {
             if (string.IsNullOrEmpty(retorno)) return true;
-            if (retorno.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase)) return true;
-            return false;
+            return retorno.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase);
         }
 
-        // Eventos vazios necessários pelo Designer
+        // Eventos vazios para o Designer
         private void textBox5_TextChanged(object sender, EventArgs e) { }
         private void lblMeuId_Click(object sender, EventArgs e) { }
         private void lblMinhaSenha_Click(object sender, EventArgs e) { }
