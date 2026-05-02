@@ -12,7 +12,7 @@ namespace projeto_integrador_entrega1
         private string minhaSenha;
         private int idPartidaSelecionada;
         private string faceDadoAtual = "";
-        private int idJogadorComDado = 0; // ← quem tem o dado é livre
+        private int idJogadorComDado = 0;
         private int turnoAtual = 1;
 
         private Dictionary<string, string> nomesFaces = new Dictionary<string, string>
@@ -50,6 +50,10 @@ namespace projeto_integrador_entrega1
         {
             InitializeComponent();
             label4.Text = Jogo.versao;
+
+            // FIX PRINCIPAL: o timer existia no Designer mas sem Interval e sem Tick conectado
+            tmrPrincipal.Interval = 5000;
+            tmrPrincipal.Tick += new System.EventHandler(tmrPrincipal_Tick);
         }
 
         public Form1(int id, string senha, int idPartida) : this()
@@ -76,7 +80,9 @@ namespace projeto_integrador_entrega1
 
             string nomeJogador = BuscarNomeJogador(idJogadorComDado);
             string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
-            string livreOuNao = idJogadorComDado == meuId ? "Você lançou o dado — pode colocar em qualquer cercado!" : $"Siga a condição: {nomeFace}";
+            string livreOuNao = idJogadorComDado == meuId
+                ? "Você lançou o dado — pode colocar em qualquer cercado!"
+                : $"Siga a condição: {nomeFace}";
 
             MessageBox.Show(
                 $"Partida Iniciada!\n\nTurno: 1\nJogador com o dado: {nomeJogador}\nDado: {nomeFace}\n\n{livreOuNao}",
@@ -120,10 +126,9 @@ namespace projeto_integrador_entrega1
                 if (partes.Length < 2) continue;
                 string codigo = partes[0].Trim();
                 string nome = nomesDinos.ContainsKey(codigo) ? nomesDinos[codigo] : codigo;
-                int qtd;                
+                int qtd;
                 if (!int.TryParse(partes[1].Trim(), out qtd)) continue;
-                lstMao.Items.Add($"{codigo} : {nome}(x{qtd})");
-
+                lstMao.Items.Add($"{codigo} : {nome} (x{qtd})");
             }
         }
 
@@ -145,20 +150,16 @@ namespace projeto_integrador_entrega1
                 if (qtd > 0) cmbDino.Items.Add($"{codigo} - {nome} (x{qtd})");
             }
 
-            // Carrega cercados respeitando as regras do dado
-            // Se o jogador TEM o dado → pode colocar em qualquer lugar
             bool temDado = idJogadorComDado == meuId;
 
             cmbCercado.Items.Clear();
             foreach (var c in nomesCercados)
             {
-                // Rio é SEMPRE permitido (regra do manual)
                 if (c.Key == "RI")
                 {
                     cmbCercado.Items.Add($"{c.Key} - {c.Value} (sempre permitido)");
                     continue;
                 }
-
                 if (temDado || CercadoPermitidoPeloDado(c.Key))
                     cmbCercado.Items.Add($"{c.Key} - {c.Value}");
             }
@@ -167,7 +168,6 @@ namespace projeto_integrador_entrega1
             if (cmbCercado.Items.Count > 0) cmbCercado.SelectedIndex = 0;
         }
 
-        // Versão para o _Click_1 gerado pelo Designer
         private void btnCarregarMao_Click_1(object sender, EventArgs e)
         {
             btnCarregarMao_Click(sender, e);
@@ -184,7 +184,6 @@ namespace projeto_integrador_entrega1
             string codDino = cmbDino.SelectedItem.ToString().Split('-')[0].Trim();
             string codCercado = cmbCercado.SelectedItem.ToString().Split('-')[0].Trim();
 
-            // Rio é sempre permitido — só valida se não for Rio
             bool temDado = idJogadorComDado == meuId;
             if (codCercado != "RI" && !temDado && !JogadaValida(codCercado))
             {
@@ -197,15 +196,12 @@ namespace projeto_integrador_entrega1
 
             string retorno = Jogo.Jogar(meuId, minhaSenha, codDino, codCercado);
             if (VerificarErro(retorno)) return;
+
             Form4 f = (Form4)Application.OpenForms["Form4"];
-            if (f != null)
-            {
-                f.AtualizarMapa(meuId, minhaSenha);
-            }
+            if (f != null) f.AtualizarMapa(meuId, minhaSenha);
 
             int novoTurno = Convert.ToInt32(retorno.Trim());
 
-            // Atualiza se o turno avançou
             if (novoTurno > turnoAtual)
             {
                 turnoAtual = novoTurno;
@@ -219,7 +215,9 @@ namespace projeto_integrador_entrega1
 
                     string nomeJogador = BuscarNomeJogador(idJogadorComDado);
                     string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
-                    string voceTemDado = idJogadorComDado == meuId ? "\n★ Você tem o dado — pode jogar em qualquer cercado!" : $"\nSiga a condição: {nomeFace}";
+                    string voceTemDado = idJogadorComDado == meuId
+                        ? "\n★ Você tem o dado — pode jogar em qualquer cercado!"
+                        : $"\nSiga a condição: {nomeFace}";
 
                     lblTurnoInfo.Text = $"Turno: {turnoAtual} | Dado com: {nomeJogador} | Condição: {nomeFace}";
                     AtualizarJogadores();
@@ -232,7 +230,7 @@ namespace projeto_integrador_entrega1
             }
             else
             {
-                MessageBox.Show($"Jogada realizada!", "Sucesso");
+                MessageBox.Show("Jogada realizada!", "Sucesso");
             }
 
             btnCarregarMao_Click(null, null);
@@ -246,7 +244,6 @@ namespace projeto_integrador_entrega1
 
         private void btnVerTabuleiro_Click(object sender, EventArgs e)
         {
-            // Verifica se o Form4 já está aberto para não abrir vários
             Form4 f = (Form4)Application.OpenForms["Form4"];
             if (f == null)
             {
@@ -258,10 +255,9 @@ namespace projeto_integrador_entrega1
             {
                 f.BringToFront();
             }
-
-            // Passa os dados e atualiza os dinos
             f.AtualizarMapa(meuId, minhaSenha);
         }
+
         private void btnAtualizarJogadores_Click(object sender, EventArgs e) => AtualizarJogadores();
 
         // ===================== LISTAGEM DE PARTIDAS =====================
@@ -309,7 +305,6 @@ namespace projeto_integrador_entrega1
             lblDataPartida.Text = "Data: " + data;
             lblStatusPartida.Text = "Status: " + status;
 
-            // Mostra jogadores da partida selecionada
             string id = item.Split(']')[0].Replace("[", "").Trim();
             string retornoJog = Jogo.ListarJogadores(Convert.ToInt32(id));
             if (string.IsNullOrEmpty(retornoJog) || retornoJog.StartsWith("ERRO")) return;
@@ -325,7 +320,6 @@ namespace projeto_integrador_entrega1
             {
                 if (telaLogin.ShowDialog() == DialogResult.OK)
                 {
-                    // Recupera os dados que o Form2 salvou no Tag
                     string[] dados = telaLogin.Tag.ToString().Split(',');
                     this.meuId = Convert.ToInt32(dados[0]);
                     this.minhaSenha = dados[1];
@@ -339,6 +333,7 @@ namespace projeto_integrador_entrega1
                 }
             }
         }
+
         // ===================== AUXILIARES =====================
 
         private void MostrarTabuleiro()
@@ -365,26 +360,81 @@ namespace projeto_integrador_entrega1
             txtTabuleiro.Text = sb.ToString();
         }
 
-        // ✅ Verifica se o cercado é permitido pela face do dado
-        // Regra: quem TEM o dado é livre. Rio é sempre permitido.
-        private bool CercadoPermitidoPeloDado(string codCercado)
+        private Dictionary<string, List<string>> CarregarTabuleiro()
         {
-            if (string.IsNullOrEmpty(faceDadoAtual)) return true;
-            if (codCercado == "RI") return true; // Rio sempre permitido
+            var tabuleiro = new Dictionary<string, List<string>>();
+            string raw = Jogo.ExibirTabuleiro(meuId, minhaSenha);
+            if (string.IsNullOrEmpty(raw) || raw.StartsWith("ERRO")) return tabuleiro;
 
-            switch (faceDadoAtual)
+            foreach (string linha in raw.Replace("\r", "").Trim().Split('\n'))
             {
-                case "AL": return codCercado == "IS"; // Praça de Alimentação: Ilha Solitária
-                case "FL": return codCercado == "FI" || codCercado == "MT"; // Floresta
-                case "PR": return codCercado == "PA" || codCercado == "CD"; // Pradaria
-                case "WC": return codCercado == "RS"; // Banheiros
-                case "TI": return CercadoSemTRex(codCercado); // Sem T-Rex
-                case "VZ": return CercadoVazio(codCercado);   // Vazio
+                string[] p = linha.Trim().Split(',');
+                if (p.Length < 3) continue;
+                string cercado = p[0].Trim();
+                string dino = p[1].Trim();
+                int qtd;
+                if (!int.TryParse(p[2].Trim(), out qtd)) continue;
+                if (!tabuleiro.ContainsKey(cercado))
+                    tabuleiro[cercado] = new List<string>();
+                for (int i = 0; i < qtd; i++)
+                    tabuleiro[cercado].Add(dino);
+            }
+            return tabuleiro;
+        }
+
+        private bool CercadoAceitaDino(string cercado, string dino, Dictionary<string, List<string>> tab)
+        {
+            var conteudo = tab.ContainsKey(cercado) ? tab[cercado] : new List<string>();
+            switch (cercado)
+            {
+                case "IS": return conteudo.Count == 0;
+                case "RS": return conteudo.Count == 0;
+                case "MT": return conteudo.Count < 3;
+                case "FI": return conteudo.Count == 0 || conteudo.TrueForAll(d => d == dino);
+                case "CD": return !conteudo.Contains(dino);
+                case "PA": return true;
+                case "RI": return true;
                 default: return true;
             }
         }
 
-        // Mantido para compatibilidade
+        private bool CercadoPermitidoPeloDado(string codCercado)
+        {
+            if (string.IsNullOrEmpty(faceDadoAtual)) return true;
+            if (codCercado == "RI") return true;
+            switch (faceDadoAtual)
+            {
+                case "AL": return codCercado == "IS";
+                case "FL": return codCercado == "FI" || codCercado == "MT";
+                case "PR": return codCercado == "PA" || codCercado == "CD";
+                case "WC": return codCercado == "RS";
+                case "TI": return CercadoSemTRex(codCercado);
+                case "VZ": return CercadoVazio(codCercado);
+                default: return true;
+            }
+        }
+
+        private bool CercadoPermitidoPeloDadoComTab(string codCercado, Dictionary<string, List<string>> tab)
+        {
+            if (string.IsNullOrEmpty(faceDadoAtual)) return true;
+            if (codCercado == "RI") return true;
+            switch (faceDadoAtual)
+            {
+                case "AL": return codCercado == "IS";
+                case "FL": return codCercado == "FI" || codCercado == "MT";
+                case "PR": return codCercado == "PA" || codCercado == "CD";
+                case "WC": return codCercado == "RS";
+                case "TI":
+                    var contTI = tab.ContainsKey(codCercado) ? tab[codCercado] : new List<string>();
+                    return !contTI.Contains("Ti");
+                case "VZ":
+                    var contVZ = tab.ContainsKey(codCercado) ? tab[codCercado] : new List<string>();
+                    return contVZ.Count == 0;
+                default:
+                    return true;
+            }
+        }
+
         private bool JogadaValida(string codCercado)
         {
             return CercadoPermitidoPeloDado(codCercado);
@@ -434,13 +484,13 @@ namespace projeto_integrador_entrega1
             if (retorno.StartsWith("ERRO")) return;
 
             listBoxJogadores.Items.Clear();
-            foreach (string j in retorno.Replace("\r", "").Trim().Split('\n')) {
+            foreach (string j in retorno.Replace("\r", "").Trim().Split('\n'))
+            {
                 if (string.IsNullOrEmpty(j)) continue;
                 string[] dados = j.Split(',');
                 string statusTexto = (dados.Length > 2 && dados[2].Trim() == "J") ? "✅" : "⏳";
                 listBoxJogadores.Items.Add($"{statusTexto} {dados[1].Trim()}");
             }
-                
         }
 
         private bool VerificarErro(string retorno)
@@ -465,109 +515,173 @@ namespace projeto_integrador_entrega1
         private void cmbCercado_SelectedIndexChanged(object sender, EventArgs e) { }
         private void lblNomePartida_Click(object sender, EventArgs e) { }
 
+        // ===================== MOTOR DE AUTOMAÇÃO (TIMER) =====================
+
         private void tmrPrincipal_Tick(object sender, EventArgs e)
         {
             string retorno = Jogo.VerificarPartida(idPartidaSelecionada);
-            if (retorno.StartsWith("ERRO")) return;
 
-            string[] dados = retorno.Replace("\r", "").Split(',');
-            int idQuemJoga = Convert.ToInt32(dados[3]);
-            string statusPartida = dados[0];
+            // Diagnóstico no txtTabuleiro — remova após confirmar funcionamento
+            txtTabuleiro.Text = $"[TICK] raw: \"{retorno}\"\nmeuId={meuId} | comDado={idJogadorComDado} | face={faceDadoAtual}";
+
+            if (string.IsNullOrEmpty(retorno) || retorno.StartsWith("ERRO")) return;
+
+            string[] dados = retorno.Replace("\r", "").Trim().Split(',');
+            if (dados.Length < 5) return;
+
+            // Formato esperado: idPartida, turno, status, idJogadorComDado, faceDado
+            string statusPartida = dados[2].Trim();
+            int novoTurno;
+            if (!int.TryParse(dados[1].Trim(), out novoTurno)) return;
+
+            idJogadorComDado = Convert.ToInt32(dados[3].Trim());
+            faceDadoAtual = dados[4].Trim();
+            turnoAtual = novoTurno;
 
             AtualizarJogadores();
-
             if (Application.OpenForms["Form4"] is Form4 f4)
-            {
                 f4.AtualizarMapa(meuId, minhaSenha);
-            }
-            if (statusPartida == "J" && idQuemJoga == meuId)
+
+            string nomeJog = BuscarNomeJogador(idJogadorComDado);
+            string nomeFaceAtual = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
+            bool ehMinhaVez = idJogadorComDado == meuId;
+            bool partidaAtiva = statusPartida != "E";
+
+            lblTurnoInfo.Text = $"Turno: {turnoAtual} | Dado: {nomeJog}{(ehMinhaVez ? " ★ MEU DADO" : "")} | {nomeFaceAtual} | {(partidaAtiva ? "Em andamento" : "Encerrada")}";
+
+            if (partidaAtiva && ehMinhaVez)
             {
-                
                 tmrPrincipal.Stop();
-
                 RealizarJogadaAutomatica();
-
                 tmrPrincipal.Start();
             }
         }
 
-        private void RealizarCicloDeJogada()
-        {
-            string mao = Jogo.ExibirMao(meuId, minhaSenha);
-            string tabuleiro = Jogo.ExibirTabuleiro(meuId, minhaSenha);
-            string codDino = mao.Split(',')[0].Trim();
-            string cercadoAlvo = "RI";
-            if (CercadoPermitidoPeloDado("IS") && CercadoVazio("IS"))
-            {
-                cercadoAlvo = "IS";
-            }
-            Jogo.Jogar(meuId, minhaSenha, codDino, cercadoAlvo); //
-        }
+        // ===================== LÓGICA DE AUTOMAÇÃO =====================
 
         private void RealizarJogadaAutomatica()
         {
-            // 1. Coleta de dados (Informações que preciso)
             string maoRaw = Jogo.ExibirMao(meuId, minhaSenha);
-            string tabuleiroRaw = Jogo.ExibirTabuleiro(meuId, minhaSenha);
+            txtTabuleiro.Text += $"\n\n[AUTO] mão: \"{maoRaw}\"";
 
             if (string.IsNullOrEmpty(maoRaw) || maoRaw.StartsWith("ERRO")) return;
 
-            // Extrai o primeiro dinossauro da mão (Ex: "Ti")
-            string codDino = maoRaw.Split(',')[0].Trim();
-            string cercadoAlvo = "RI"; // O Rio é o nosso "porto seguro" (sempre aceita)
-
-            // 2. Tomada de Decisão baseada no Dado (Algoritmo Não Aleatório)
-            // Se eu tiver o dado, posso jogar em qualquer lugar (exceto regras internas de cercado)
-            bool souEuComDado = (idJogadorComDado == meuId);
-
-            if (souEuComDado)
+            var mao = new List<string>();
+            foreach (string linha in maoRaw.Replace("\r", "").Trim().Split('\n'))
             {
-                // Prioridade se eu tiver liberdade total: Ilha Solitária ou Rei da Selva
-                if (CercadoVazio("IS")) cercadoAlvo = "IS";
-                else if (CercadoVazio("RS")) cercadoAlvo = "RS";
+                if (string.IsNullOrEmpty(linha)) continue;
+                string[] p = linha.Trim().Split(',');
+                if (p.Length < 2) continue;
+                int qtd;
+                if (!int.TryParse(p[1].Trim(), out qtd) || qtd <= 0) continue;
+                mao.Add(p[0].Trim());
             }
-            else
+
+            txtTabuleiro.Text += $"\ndinos: [{string.Join(", ", mao)}]";
+            if (mao.Count == 0) return;
+
+            var tabuleiro = CarregarTabuleiro();
+
+            string codDino = null;
+            string cercado = null;
+            EscolherMelhorJogada(mao, tabuleiro, out codDino, out cercado);
+
+            txtTabuleiro.Text += $"\ndecisão: {codDino} → {cercado}";
+            if (codDino == null || cercado == null) return;
+
+            string resultado = Jogo.Jogar(meuId, minhaSenha, codDino, cercado);
+            txtTabuleiro.Text += $"\nresultado: \"{resultado}\"";
+
+            if (string.IsNullOrEmpty(resultado) || resultado.StartsWith("ERRO")) return;
+
+            string nomeDino = nomesDinos.ContainsKey(codDino) ? nomesDinos[codDino] : codDino;
+            string nomeCerc = nomesCercados.ContainsKey(cercado) ? nomesCercados[cercado] : cercado;
+            lblTurnoInfo.Text = $"🤖 Turno {turnoAtual}: {nomeDino} → {nomeCerc}";
+
+            if (Application.OpenForms["Form4"] is Form4 f4)
+                f4.AtualizarMapa(meuId, minhaSenha);
+
+            btnCarregarMao_Click(null, null);
+        }
+
+        private void EscolherMelhorJogada(List<string> mao, Dictionary<string, List<string>> tabuleiro,
+                                           out string melhorDino, out string melhorCercado)
+        {
+            melhorDino = null;
+            melhorCercado = null;
+            int melhorScore = int.MinValue;
+            bool temDado = idJogadorComDado == meuId;
+
+            foreach (string dino in mao)
             {
-                // Switch baseado nas faces do dado para determinar ações correspondentes
-                switch (faceDadoAtual)
+                foreach (string cercado in ObterCercadosCandidatos(dino, tabuleiro, temDado))
                 {
-                    case "AL": // Praça de Alimentação -> Deve jogar na Ilha Solitária
-                        if (CercadoVazio("IS")) cercadoAlvo = "IS";
-                        break;
-
-                    case "FL": // Floresta -> Lado Verde (FI ou MT)
-                        cercadoAlvo = "FI"; // Tenta Floresta da Igualdade
-                        break;
-
-                    case "PR": // Pradaria -> Lado Amarelo (PA ou CD)
-                        cercadoAlvo = "PA"; // Tenta Pradaria do Amor
-                        break;
-
-                    case "WC": // Banheiros -> Lado dos Banheiros (RS)
-                        if (CercadoVazio("RS")) cercadoAlvo = "RS";
-                        break;
-
-                    case "TI": // Cuidado com o T-Rex -> Cercado sem T-Rex
-                               // O método CercadoSemTRex que você já tem será usado aqui
-                        if (CercadoSemTRex("CD")) cercadoAlvo = "CD";
-                        else if (CercadoSemTRex("PA")) cercadoAlvo = "PA";
-                        break;
-
-                    case "VZ": // Cercado Vazio -> Qualquer um vazio
-                        if (CercadoVazio("FI")) cercadoAlvo = "FI";
-                        else if (CercadoVazio("MT")) cercadoAlvo = "MT";
-                        break;
+                    int score = AvaliarJogada(dino, cercado, tabuleiro);
+                    if (score > melhorScore)
+                    {
+                        melhorScore = score;
+                        melhorDino = dino;
+                        melhorCercado = cercado;
+                    }
                 }
             }
 
-            // 3. Execução (Chamo "Jogar")
-            // Se a lógica acima não encontrar um cercado ideal, o alvo permanece "RI" (Rio)
-            string resultado = Jogo.Jogar(meuId, minhaSenha, codDino, cercadoAlvo);
+            // Fallback: primeiro dino no Rio
+            if (melhorDino == null)
+            {
+                melhorDino = mao[0];
+                melhorCercado = "RI";
+            }
+        }
 
-            // 4. Pós-jogada: Atualiza o Mapa Visual no Form4
-            Form4 f4 = (Form4)Application.OpenForms["Form4"];
-            if (f4 != null) f4.AtualizarMapa(meuId, minhaSenha);
+        private List<string> ObterCercadosCandidatos(string dino, Dictionary<string, List<string>> tab, bool temDado)
+        {
+            string[] todos = { "IS", "RS", "MT", "FI", "CD", "PA" };
+            var candidatos = new List<string>();
+
+            foreach (string c in todos)
+            {
+                if (!temDado && !CercadoPermitidoPeloDadoComTab(c, tab)) continue;
+                if (!CercadoAceitaDino(c, dino, tab)) continue;
+                candidatos.Add(c);
+            }
+
+            candidatos.Add("RI");
+            return candidatos;
+        }
+
+        private int AvaliarJogada(string dino, string cercado, Dictionary<string, List<string>> tab)
+        {
+            var cont = tab.ContainsKey(cercado) ? tab[cercado] : new List<string>();
+
+            switch (cercado)
+            {
+                case "IS": return 7;
+
+                case "RS": return 6;
+
+                case "FI":
+                    if (cont.Count == 0) return 3;
+                    if (cont[0] == dino) return 4 + cont.Count;
+                    return -99;
+
+                case "CD":
+                    return 3 + cont.Count;
+
+                case "PA":
+                    int iguais = 0;
+                    foreach (string d in cont) if (d == dino) iguais++;
+                    return iguais % 2 == 1 ? 8 : 3;
+
+                case "MT":
+                    return dino == "Ti" ? 5 : 3;
+
+                case "RI":
+                    return 1;
+
+                default:
+                    return 1;
+            }
         }
     }
 }
-
