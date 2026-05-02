@@ -14,6 +14,7 @@ namespace projeto_integrador_entrega1
         private string faceDadoAtual = "";
         private int idJogadorComDado = 0;
         private int turnoAtual = 1;
+        private int ultimoTurnoJogado = -1; // controla para não jogar duas vezes no mesmo turno
 
         private Dictionary<string, string> nomesFaces = new Dictionary<string, string>
         {
@@ -51,7 +52,7 @@ namespace projeto_integrador_entrega1
             InitializeComponent();
             label4.Text = Jogo.versao;
 
-            // FIX PRINCIPAL: o timer existia no Designer mas sem Interval e sem Tick conectado
+            // FIX: timer não estava conectado no Designer
             tmrPrincipal.Interval = 5000;
             tmrPrincipal.Tick += new System.EventHandler(tmrPrincipal_Tick);
         }
@@ -77,6 +78,7 @@ namespace projeto_integrador_entrega1
             idJogadorComDado = Convert.ToInt32(dados[0]);
             faceDadoAtual = dados[1].Trim();
             turnoAtual = 1;
+            ultimoTurnoJogado = -1; // reseta o controle de turno
 
             string nomeJogador = BuscarNomeJogador(idJogadorComDado);
             string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
@@ -196,6 +198,9 @@ namespace projeto_integrador_entrega1
 
             string retorno = Jogo.Jogar(meuId, minhaSenha, codDino, codCercado);
             if (VerificarErro(retorno)) return;
+
+            // Marca o turno como jogado manualmente também
+            ultimoTurnoJogado = turnoAtual;
 
             Form4 f = (Form4)Application.OpenForms["Form4"];
             if (f != null) f.AtualizarMapa(meuId, minhaSenha);
@@ -521,15 +526,15 @@ namespace projeto_integrador_entrega1
         {
             string retorno = Jogo.VerificarPartida(idPartidaSelecionada);
 
-            // Diagnóstico no txtTabuleiro — remova após confirmar funcionamento
-            txtTabuleiro.Text = $"[TICK] raw: \"{retorno}\"\nmeuId={meuId} | comDado={idJogadorComDado} | face={faceDadoAtual}";
+            // Diagnóstico — remova após confirmar funcionamento
+            txtTabuleiro.Text = $"[TICK] raw: \"{retorno}\"\nmeuId={meuId} | comDado={idJogadorComDado} | face={faceDadoAtual} | ultimoTurnoJogado={ultimoTurnoJogado}";
 
             if (string.IsNullOrEmpty(retorno) || retorno.StartsWith("ERRO")) return;
 
             string[] dados = retorno.Replace("\r", "").Trim().Split(',');
             if (dados.Length < 5) return;
 
-            // Formato esperado: idPartida, turno, status, idJogadorComDado, faceDado
+            // Formato: idPartida, turno, status, idJogadorComDado, faceDado
             string statusPartida = dados[2].Trim();
             int novoTurno;
             if (!int.TryParse(dados[1].Trim(), out novoTurno)) return;
@@ -549,7 +554,8 @@ namespace projeto_integrador_entrega1
 
             lblTurnoInfo.Text = $"Turno: {turnoAtual} | Dado: {nomeJog}{(ehMinhaVez ? " ★ MEU DADO" : "")} | {nomeFaceAtual} | {(partidaAtiva ? "Em andamento" : "Encerrada")}";
 
-            if (partidaAtiva && ehMinhaVez)
+            // FIX: só joga se for minha vez E se ainda não joguei neste turno
+            if (partidaAtiva && ehMinhaVez && turnoAtual != ultimoTurnoJogado)
             {
                 tmrPrincipal.Stop();
                 RealizarJogadaAutomatica();
@@ -592,7 +598,11 @@ namespace projeto_integrador_entrega1
             string resultado = Jogo.Jogar(meuId, minhaSenha, codDino, cercado);
             txtTabuleiro.Text += $"\nresultado: \"{resultado}\"";
 
+            // Só marca como jogado se não deu ERRO
             if (string.IsNullOrEmpty(resultado) || resultado.StartsWith("ERRO")) return;
+
+            // FIX: marca o turno atual como jogado para não jogar de novo
+            ultimoTurnoJogado = turnoAtual;
 
             string nomeDino = nomesDinos.ContainsKey(codDino) ? nomesDinos[codDino] : codDino;
             string nomeCerc = nomesCercados.ContainsKey(cercado) ? nomesCercados[cercado] : cercado;
@@ -626,7 +636,7 @@ namespace projeto_integrador_entrega1
                 }
             }
 
-            // Fallback: primeiro dino no Rio
+            // Fallback seguro
             if (melhorDino == null)
             {
                 melhorDino = mao[0];
@@ -646,6 +656,7 @@ namespace projeto_integrador_entrega1
                 candidatos.Add(c);
             }
 
+            // Rio é sempre o fallback final
             candidatos.Add("RI");
             return candidatos;
         }
