@@ -85,6 +85,7 @@ namespace projeto_integrador_entrega1
                     int.TryParse(dadosVerif[1].Trim(), out turnoAtual);
                     idJogadorComDado = Convert.ToInt32(dadosVerif[3].Trim());
                     faceDadoAtual = dadosVerif[4].Trim();
+                    AbrirTabuleiro();
                     IniciarModoAutonomo("🔁 Partida já em andamento. Entrando no modo autônomo...");
                     return;
                 }
@@ -104,6 +105,7 @@ namespace projeto_integrador_entrega1
                         int.TryParse(dadosVerif[1].Trim(), out turnoAtual);
                         idJogadorComDado = Convert.ToInt32(dadosVerif[3].Trim());
                         faceDadoAtual = dadosVerif[4].Trim();
+                        AbrirTabuleiro();
                         IniciarModoAutonomo("🔁 Outro jogador iniciou. Entrando no modo autônomo...");
                         return;
                     }
@@ -119,8 +121,25 @@ namespace projeto_integrador_entrega1
                 faceDadoAtual = dados[1].Trim();
             }
             turnoAtual = 1;
+            AbrirTabuleiro();
 
             IniciarModoAutonomo("✅ Partida iniciada com sucesso!");
+        }
+
+        private void AbrirTabuleiro()
+        {
+            Form4 f = (Form4)Application.OpenForms["Form4"];
+            if (f == null)
+            {
+                f = new Form4();
+                f.Name = "Form4";
+                f.Show();
+            }
+            else
+            {
+                f.BringToFront();
+            }
+            f.AtualizarMapa(meuId, minhaSenha);
         }
 
         private void IniciarModoAutonomo(string mensagem)
@@ -524,7 +543,7 @@ namespace projeto_integrador_entrega1
         {
             string retorno = Jogo.ListarPartidas("T");
             if (VerificarErro(retorno)) return;
-            listBoxPartidas.Items.Clear();
+            list.Items.Clear();
             foreach (string partida in retorno.Replace("\r", "").Trim().Split('\n'))
             {
                 if (string.IsNullOrEmpty(partida)) continue;
@@ -533,15 +552,15 @@ namespace projeto_integrador_entrega1
                 {
                     string status = dados[3].Trim() == "J" ? "Jogando"
                                   : dados[3].Trim() == "E" ? "Encerrada" : "Aberta";
-                    listBoxPartidas.Items.Add($"[{dados[0].Trim()}] {dados[1].Trim()} — {dados[2].Trim()} ({status})");
+                    list.Items.Add($"[{dados[0].Trim()}] {dados[1].Trim()} — {dados[2].Trim()} ({status})");
                 }
             }
         }
 
         private void listBoxPartidas_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listBoxPartidas.SelectedItem == null) return;
-            string item = listBoxPartidas.SelectedItem.ToString();
+            if (list.SelectedItem == null) return;
+            string item = list.SelectedItem.ToString();
             string[] partes = item.Split(']');
             if (partes.Length < 2) return;
             string resto = partes[1].Trim();
@@ -557,9 +576,9 @@ namespace projeto_integrador_entrega1
             string id = item.Split(']')[0].Replace("[", "").Trim();
             string retornoJog = Jogo.ListarJogadores(Convert.ToInt32(id));
             if (string.IsNullOrEmpty(retornoJog) || retornoJog.StartsWith("ERRO")) return;
-            listBoxJogadores.Items.Clear();
+            listPlayers.Items.Clear();
             foreach (string j in retornoJog.Replace("\r", "").Trim().Split('\n'))
-                if (!string.IsNullOrEmpty(j)) listBoxJogadores.Items.Add(j.Trim());
+                if (!string.IsNullOrEmpty(j)) listPlayers.Items.Add(j.Trim());
         }
 
         private void btnAdicionarJogador_Click(object sender, EventArgs e)
@@ -639,13 +658,13 @@ namespace projeto_integrador_entrega1
         {
             string retorno = Jogo.ListarJogadores(idPartidaSelecionada);
             if (string.IsNullOrEmpty(retorno) || retorno.StartsWith("ERRO")) return;
-            listBoxJogadores.Items.Clear();
+            listPlayers.Items.Clear();
             foreach (string j in retorno.Replace("\r", "").Trim().Split('\n'))
             {
                 if (string.IsNullOrEmpty(j)) continue;
                 string[] dados = j.Split(',');
                 string st = (dados.Length > 2 && dados[2].Trim() == "J") ? "✅" : "⏳";
-                listBoxJogadores.Items.Add($"{st} {dados[1].Trim()}");
+                listPlayers.Items.Add($"{st} {dados[1].Trim()}");
             }
         }
 
@@ -676,5 +695,7 @@ namespace projeto_integrador_entrega1
         private void cmbDino_SelectedIndexChanged(object sender, EventArgs e) { }
         private void cmbCercado_SelectedIndexChanged(object sender, EventArgs e) { }
         private void lblNomePartida_Click(object sender, EventArgs e) { }
+
+      
     }
 }

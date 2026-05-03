@@ -117,5 +117,25 @@ namespace projeto_integrador_entrega1
                 default: return "";
             }
         }
+
+        //        private void btnVerMao_Click(object sender, EventArgs e)
+        //{
+        //    string retorno = Jogo.ExibirMao(meuId, minhaSenha);
+        //    if (VerificarErro(retorno)) return;
+        //    lstMao.Items.Clear();
+        //    foreach (string d in retorno.Replace("\r", "").Trim().Split('\n'))
+        //    {
+        //        if (string.IsNullOrEmpty(d)) continue;
+        //        string[] partes = d.Trim().Split(',');
+        //        if (partes.Length < 2) continue;
+        //        string codigo = partes[0].Trim();
+        //        string nome = nomesDinos.ContainsKey(codigo) ? nomesDinos[codigo] : codigo;
+        //        int qtd;
+        //        if (!int.TryParse(partes[1].Trim(), out qtd)) continue;
+        //        lstMao.Items.Add($"{codigo} : {nome} (x{qtd})");
+        //    }
+        //}
+
+        private void btnCarregarMao_Click(object sender, EventArgs e) { }
     }
 }
