@@ -676,5 +676,15 @@ namespace projeto_integrador_entrega1
         private void cmbDino_SelectedIndexChanged(object sender, EventArgs e) { }
         private void cmbCercado_SelectedIndexChanged(object sender, EventArgs e) { }
         private void lblNomePartida_Click(object sender, EventArgs e) { }
+
+        private void label14_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTurnoInfo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

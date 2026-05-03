@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.listBoxPartidas = new System.Windows.Forms.ListBox();
             this.lblNomePartida = new System.Windows.Forms.Label();
@@ -48,10 +49,7 @@
             this.cmbDino = new System.Windows.Forms.ComboBox();
             this.btnVerificarTurno = new System.Windows.Forms.Button();
             this.cmbCercado = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.btnCarregarMao = new System.Windows.Forms.Button();
             this.btnJogar = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
@@ -63,6 +61,8 @@
             this.txtTabuleiro = new System.Windows.Forms.TextBox();
             this.tmrPrincipal = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -70,10 +70,10 @@
             this.button1.BackColor = System.Drawing.Color.Teal;
             this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button1.Location = new System.Drawing.Point(86, 240);
+            this.button1.Location = new System.Drawing.Point(208, 407);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(118, 36);
+            this.button1.Size = new System.Drawing.Size(77, 54);
             this.button1.TabIndex = 1;
             this.button1.Text = "Listar Partidas";
             this.button1.UseVisualStyleBackColor = false;
@@ -85,7 +85,7 @@
             this.listBoxPartidas.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxPartidas.FormattingEnabled = true;
             this.listBoxPartidas.ItemHeight = 15;
-            this.listBoxPartidas.Location = new System.Drawing.Point(10, 280);
+            this.listBoxPartidas.Location = new System.Drawing.Point(10, 217);
             this.listBoxPartidas.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxPartidas.Name = "listBoxPartidas";
             this.listBoxPartidas.Size = new System.Drawing.Size(194, 244);
@@ -98,12 +98,12 @@
             this.lblNomePartida.AutoSize = true;
             this.lblNomePartida.BackColor = System.Drawing.Color.Aquamarine;
             this.lblNomePartida.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNomePartida.Location = new System.Drawing.Point(244, 360);
+            this.lblNomePartida.Location = new System.Drawing.Point(208, 217);
             this.lblNomePartida.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblNomePartida.Name = "lblNomePartida";
-            this.lblNomePartida.Size = new System.Drawing.Size(12, 15);
+            this.lblNomePartida.Size = new System.Drawing.Size(77, 15);
             this.lblNomePartida.TabIndex = 3;
-            this.lblNomePartida.Text = "-";
+            this.lblNomePartida.Text = "NomePartida";
             this.lblNomePartida.Click += new System.EventHandler(this.lblNomePartida_Click);
             // 
             // lblDataPartida
@@ -111,24 +111,24 @@
             this.lblDataPartida.AutoSize = true;
             this.lblDataPartida.BackColor = System.Drawing.Color.Aquamarine;
             this.lblDataPartida.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDataPartida.Location = new System.Drawing.Point(244, 389);
+            this.lblDataPartida.Location = new System.Drawing.Point(208, 244);
             this.lblDataPartida.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDataPartida.Name = "lblDataPartida";
-            this.lblDataPartida.Size = new System.Drawing.Size(12, 15);
+            this.lblDataPartida.Size = new System.Drawing.Size(69, 15);
             this.lblDataPartida.TabIndex = 4;
-            this.lblDataPartida.Text = "-";
+            this.lblDataPartida.Text = "DataPartida";
             // 
             // lblStatusPartida
             // 
             this.lblStatusPartida.AutoSize = true;
             this.lblStatusPartida.BackColor = System.Drawing.Color.Aquamarine;
             this.lblStatusPartida.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatusPartida.Location = new System.Drawing.Point(244, 423);
+            this.lblStatusPartida.Location = new System.Drawing.Point(208, 272);
             this.lblStatusPartida.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblStatusPartida.Name = "lblStatusPartida";
-            this.lblStatusPartida.Size = new System.Drawing.Size(12, 15);
+            this.lblStatusPartida.Size = new System.Drawing.Size(77, 15);
             this.lblStatusPartida.TabIndex = 5;
-            this.lblStatusPartida.Text = "-";
+            this.lblStatusPartida.Text = "StatusPartida";
             // 
             // listBoxJogadores
             // 
@@ -136,20 +136,21 @@
             this.listBoxJogadores.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxJogadores.FormattingEnabled = true;
             this.listBoxJogadores.ItemHeight = 15;
-            this.listBoxJogadores.Location = new System.Drawing.Point(10, 118);
+            this.listBoxJogadores.Location = new System.Drawing.Point(10, 79);
             this.listBoxJogadores.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxJogadores.Name = "listBoxJogadores";
-            this.listBoxJogadores.Size = new System.Drawing.Size(139, 109);
+            this.listBoxJogadores.Size = new System.Drawing.Size(194, 94);
             this.listBoxJogadores.TabIndex = 6;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 72);
+            this.label4.Location = new System.Drawing.Point(11, 34);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.Size = new System.Drawing.Size(41, 13);
             this.label4.TabIndex = 7;
+            this.label4.Text = "version";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label6
@@ -157,7 +158,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label6.Location = new System.Drawing.Point(11, 241);
+            this.label6.Location = new System.Drawing.Point(11, 197);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(60, 16);
@@ -169,7 +170,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label7.Location = new System.Drawing.Point(11, 92);
+            this.label7.Location = new System.Drawing.Point(7, 58);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(74, 16);
@@ -178,7 +179,7 @@
             // 
             // btnVerMao
             // 
-            this.btnVerMao.Location = new System.Drawing.Point(344, 496);
+            this.btnVerMao.Location = new System.Drawing.Point(288, 677);
             this.btnVerMao.Name = "btnVerMao";
             this.btnVerMao.Size = new System.Drawing.Size(75, 23);
             this.btnVerMao.TabIndex = 21;
@@ -189,29 +190,29 @@
             // lblMeuId
             // 
             this.lblMeuId.AutoSize = true;
-            this.lblMeuId.Location = new System.Drawing.Point(198, 113);
+            this.lblMeuId.Location = new System.Drawing.Point(209, 94);
             this.lblMeuId.Name = "lblMeuId";
-            this.lblMeuId.Size = new System.Drawing.Size(10, 13);
+            this.lblMeuId.Size = new System.Drawing.Size(42, 13);
             this.lblMeuId.TabIndex = 22;
-            this.lblMeuId.Text = "-";
+            this.lblMeuId.Text = "Meu ID";
             this.lblMeuId.Click += new System.EventHandler(this.lblMeuId_Click);
             // 
             // lblMinhaSenha
             // 
             this.lblMinhaSenha.AutoSize = true;
-            this.lblMinhaSenha.Location = new System.Drawing.Point(198, 170);
+            this.lblMinhaSenha.Location = new System.Drawing.Point(209, 137);
             this.lblMinhaSenha.Name = "lblMinhaSenha";
-            this.lblMinhaSenha.Size = new System.Drawing.Size(10, 13);
+            this.lblMinhaSenha.Size = new System.Drawing.Size(70, 13);
             this.lblMinhaSenha.TabIndex = 23;
-            this.lblMinhaSenha.Text = "-";
+            this.lblMinhaSenha.Text = "Minha Senha";
             this.lblMinhaSenha.Click += new System.EventHandler(this.lblMinhaSenha_Click);
             // 
             // lstMao
             // 
             this.lstMao.FormattingEnabled = true;
-            this.lstMao.Location = new System.Drawing.Point(408, 360);
+            this.lstMao.Location = new System.Drawing.Point(208, 500);
             this.lstMao.Name = "lstMao";
-            this.lstMao.Size = new System.Drawing.Size(201, 82);
+            this.lstMao.Size = new System.Drawing.Size(155, 173);
             this.lstMao.TabIndex = 24;
             // 
             // lblinfot
@@ -219,7 +220,7 @@
             this.lblinfot.AutoSize = true;
             this.lblinfot.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblinfot.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblinfot.Location = new System.Drawing.Point(675, 262);
+            this.lblinfot.Location = new System.Drawing.Point(394, 478);
             this.lblinfot.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblinfot.Name = "lblinfot";
             this.lblinfot.Size = new System.Drawing.Size(147, 16);
@@ -231,7 +232,7 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label11.Location = new System.Drawing.Point(447, 329);
+            this.label11.Location = new System.Drawing.Point(209, 478);
             this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(115, 16);
@@ -242,16 +243,17 @@
             // lblTurnoInfo
             // 
             this.lblTurnoInfo.AutoSize = true;
-            this.lblTurnoInfo.Location = new System.Drawing.Point(618, 334);
+            this.lblTurnoInfo.Location = new System.Drawing.Point(397, 534);
             this.lblTurnoInfo.Name = "lblTurnoInfo";
             this.lblTurnoInfo.Size = new System.Drawing.Size(31, 13);
             this.lblTurnoInfo.TabIndex = 28;
             this.lblTurnoInfo.Text = "turno";
+            this.lblTurnoInfo.Click += new System.EventHandler(this.lblTurnoInfo_Click);
             // 
             // cmbDino
             // 
             this.cmbDino.FormattingEnabled = true;
-            this.cmbDino.Location = new System.Drawing.Point(711, 64);
+            this.cmbDino.Location = new System.Drawing.Point(397, 312);
             this.cmbDino.Name = "cmbDino";
             this.cmbDino.Size = new System.Drawing.Size(121, 21);
             this.cmbDino.TabIndex = 29;
@@ -260,7 +262,7 @@
             // 
             // btnVerificarTurno
             // 
-            this.btnVerificarTurno.Location = new System.Drawing.Point(678, 287);
+            this.btnVerificarTurno.Location = new System.Drawing.Point(397, 500);
             this.btnVerificarTurno.Name = "btnVerificarTurno";
             this.btnVerificarTurno.Size = new System.Drawing.Size(115, 31);
             this.btnVerificarTurno.TabIndex = 30;
@@ -270,30 +272,12 @@
             // cmbCercado
             // 
             this.cmbCercado.FormattingEnabled = true;
-            this.cmbCercado.Location = new System.Drawing.Point(711, 113);
+            this.cmbCercado.Location = new System.Drawing.Point(397, 288);
             this.cmbCercado.Name = "cmbCercado";
             this.cmbCercado.Size = new System.Drawing.Size(121, 21);
             this.cmbCercado.TabIndex = 31;
             this.cmbCercado.Text = "Cercado";
             this.cmbCercado.SelectedIndexChanged += new System.EventHandler(this.cmbCercado_SelectedIndexChanged);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(708, 48);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(60, 13);
-            this.label8.TabIndex = 32;
-            this.label8.Text = "Dinossauro";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(708, 97);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(47, 13);
-            this.label9.TabIndex = 33;
-            this.label9.Text = "Cercado";
             // 
             // label10
             // 
@@ -303,21 +287,9 @@
             this.label10.Size = new System.Drawing.Size(0, 13);
             this.label10.TabIndex = 34;
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label12.Location = new System.Drawing.Point(708, 13);
-            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(114, 32);
-            this.label12.TabIndex = 35;
-            this.label12.Text = "Realizar Jogada\r\n\r\n";
-            // 
             // btnCarregarMao
             // 
-            this.btnCarregarMao.Location = new System.Drawing.Point(660, 195);
+            this.btnCarregarMao.Location = new System.Drawing.Point(397, 339);
             this.btnCarregarMao.Name = "btnCarregarMao";
             this.btnCarregarMao.Size = new System.Drawing.Size(95, 25);
             this.btnCarregarMao.TabIndex = 36;
@@ -327,7 +299,7 @@
             // 
             // btnJogar
             // 
-            this.btnJogar.Location = new System.Drawing.Point(798, 195);
+            this.btnJogar.Location = new System.Drawing.Point(397, 370);
             this.btnJogar.Name = "btnJogar";
             this.btnJogar.Size = new System.Drawing.Size(95, 25);
             this.btnJogar.TabIndex = 37;
@@ -348,16 +320,17 @@
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label14.Location = new System.Drawing.Point(438, 58);
+            this.label14.Location = new System.Drawing.Point(7, 478);
             this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(68, 16);
+            this.label14.Size = new System.Drawing.Size(105, 16);
             this.label14.TabIndex = 40;
-            this.label14.Text = "Tabuleiro";
+            this.label14.Text = "Log da Partida";
+            this.label14.Click += new System.EventHandler(this.label14_Click);
             // 
             // btnVerTabuleiro
             // 
-            this.btnVerTabuleiro.Location = new System.Drawing.Point(415, 253);
+            this.btnVerTabuleiro.Location = new System.Drawing.Point(333, 165);
             this.btnVerTabuleiro.Name = "btnVerTabuleiro";
             this.btnVerTabuleiro.Size = new System.Drawing.Size(95, 25);
             this.btnVerTabuleiro.TabIndex = 41;
@@ -367,7 +340,7 @@
             // 
             // btnIniciar
             // 
-            this.btnIniciar.Location = new System.Drawing.Point(396, 8);
+            this.btnIniciar.Location = new System.Drawing.Point(333, 84);
             this.btnIniciar.Name = "btnIniciar";
             this.btnIniciar.Size = new System.Drawing.Size(110, 33);
             this.btnIniciar.TabIndex = 42;
@@ -377,7 +350,7 @@
             // 
             // btnAdicionarJogador
             // 
-            this.btnAdicionarJogador.Location = new System.Drawing.Point(773, 491);
+            this.btnAdicionarJogador.Location = new System.Drawing.Point(333, 127);
             this.btnAdicionarJogador.Name = "btnAdicionarJogador";
             this.btnAdicionarJogador.Size = new System.Drawing.Size(115, 32);
             this.btnAdicionarJogador.TabIndex = 43;
@@ -389,7 +362,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(14, 27);
+            this.label1.Location = new System.Drawing.Point(4, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(171, 31);
             this.label1.TabIndex = 44;
@@ -397,10 +370,10 @@
             // 
             // txtTabuleiro
             // 
-            this.txtTabuleiro.Location = new System.Drawing.Point(316, 79);
+            this.txtTabuleiro.Location = new System.Drawing.Point(8, 500);
             this.txtTabuleiro.Multiline = true;
             this.txtTabuleiro.Name = "txtTabuleiro";
-            this.txtTabuleiro.Size = new System.Drawing.Size(293, 168);
+            this.txtTabuleiro.Size = new System.Drawing.Size(194, 173);
             this.txtTabuleiro.TabIndex = 38;
             // 
             // imageList1
@@ -409,12 +382,22 @@
             this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(652, 39);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(641, 634);
+            this.pictureBox1.TabIndex = 45;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Aquamarine;
-            this.ClientSize = new System.Drawing.Size(1431, 715);
+            this.ClientSize = new System.Drawing.Size(1330, 760);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAdicionarJogador);
             this.Controls.Add(this.btnIniciar);
@@ -424,10 +407,7 @@
             this.Controls.Add(this.txtTabuleiro);
             this.Controls.Add(this.btnJogar);
             this.Controls.Add(this.btnCarregarMao);
-            this.Controls.Add(this.label12);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.cmbCercado);
             this.Controls.Add(this.btnVerificarTurno);
             this.Controls.Add(this.cmbDino);
@@ -450,6 +430,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -475,10 +456,7 @@
         private System.Windows.Forms.ComboBox cmbDino;
         private System.Windows.Forms.Button btnVerificarTurno;
         private System.Windows.Forms.ComboBox cmbCercado;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button btnCarregarMao;
         private System.Windows.Forms.Button btnJogar;
         private System.Windows.Forms.Label label13;
@@ -490,6 +468,7 @@
         private System.Windows.Forms.TextBox txtTabuleiro;
         private System.Windows.Forms.Timer tmrPrincipal;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
