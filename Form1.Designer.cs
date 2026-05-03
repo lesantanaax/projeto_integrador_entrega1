@@ -62,6 +62,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtTabuleiro = new System.Windows.Forms.TextBox();
             this.tmrPrincipal = new System.Windows.Forms.Timer(this.components);
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -402,6 +403,12 @@
             this.txtTabuleiro.Size = new System.Drawing.Size(293, 168);
             this.txtTabuleiro.TabIndex = 38;
             // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -482,6 +489,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtTabuleiro;
         private System.Windows.Forms.Timer tmrPrincipal;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 
