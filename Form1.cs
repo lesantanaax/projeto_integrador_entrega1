@@ -248,6 +248,10 @@ namespace projeto_integrador_entrega1
             Log(mensagem);
             Log("  Intervalo: 5s | Aguardando primeiro tick...");
             Log("");
+            Log("=== CERCADOS ===");
+            Log(Jogo.ListarCercados());
+            Log("=== FACES DADO ===");
+            Log(Jogo.ListarFacesDado());
 
             btnIniciar.Enabled = false;
             btnCarregarMao.Enabled = false;
