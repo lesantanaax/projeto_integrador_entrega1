@@ -1,6 +1,8 @@
 ﻿using Draft;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -15,6 +17,10 @@ namespace projeto_integrador_entrega1
         private int idJogadorComDado = 0;
         private int turnoAtual = 0;
         private int tickCount = 0;
+
+        // ── Mapa embutido (antes era Form4) ──────────────────────────
+        private Dictionary<string, FlowLayoutPanel> cercadosVisuais = new Dictionary<string, FlowLayoutPanel>();
+        private string pastaResources = @"C:\Users\bruno\source\repos\projeto_integrador_entrega1\Resources\";
 
         private Dictionary<string, string> nomesFaces = new Dictionary<string, string>
         {
@@ -54,6 +60,9 @@ namespace projeto_integrador_entrega1
 
             tmrPrincipal.Interval = 5000;
             tmrPrincipal.Tick += new System.EventHandler(tmrPrincipal_Tick);
+
+            // Cria os fields do mapa sobre a picturebox do tabuleiro
+            CriarFieldsMapa();
         }
 
         public Form1(int id, string senha, int idPartida) : this()
@@ -67,11 +76,116 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
+        // MAPA EMBUTIDO — lógica do Form4 trazida para cá
+        // Os FlowLayoutPanels são criados sobre a picturebox (pbMapa)
+        // Ajuste as coordenadas conforme sua imagem de fundo
+        // ─────────────────────────────────────────────────────────────
+        private void CriarFieldsMapa()
+        {
+            // Posição relativa à pbMapa (picturebox do tabuleiro no Form1)
+            // Ajuste os valores de Point e Size conforme seu layout
+            var config = new Dictionary<string, (Point Pos, Size Tam)>
+            {
+                { "CD", (new Point(395, 257), new Size(195, 134)) },
+                { "FI", (new Point(43,  40),  new Size(195, 134)) },
+                { "IS", (new Point(481, 422), new Size(123, 113)) },
+                { "MT", (new Point(43,  233), new Size(147, 147)) },
+                { "PA", (new Point(79,  439), new Size(147, 147)) },
+                { "RI", (new Point(304, 532), new Size(127, 84))  },
+                { "RS", (new Point(425, 61),  new Size(86,  73))  }
+            };
+
+            foreach (var kv in config)
+            {
+                string cod = kv.Key;
+
+                FlowLayoutPanel field = new FlowLayoutPanel
+                {
+                    Name         = "field_" + cod,
+                    Location     = kv.Value.Pos,
+                    Size         = kv.Value.Tam,
+                    BorderStyle  = BorderStyle.FixedSingle,
+                    BackColor    = Color.FromArgb(60, Color.Green),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = true
+                };
+
+                // Label de identificação (útil para ajuste visual)
+                Label lbl = new Label { Text = cod, AutoSize = true, BackColor = Color.Yellow };
+                field.Controls.Add(lbl);
+
+                // Adiciona sobre a picturebox pbMapa
+                pbMapa.Controls.Add(field);
+                field.BringToFront();
+
+                cercadosVisuais.Add(cod, field);
+            }
+        }
+
+        private void AtualizarMapa()
+        {
+            string retorno = Jogo.ExibirTabuleiro(meuId, minhaSenha);
+            if (string.IsNullOrEmpty(retorno) || retorno.StartsWith("ERRO")) return;
+
+            // Limpa apenas as PictureBoxes (mantém os Labels de identificação)
+            foreach (var field in cercadosVisuais.Values)
+            {
+                for (int i = field.Controls.Count - 1; i >= 0; i--)
+                    if (field.Controls[i] is PictureBox)
+                        field.Controls[i].Dispose();
+            }
+
+            foreach (string linha in retorno.Replace("\r", "").Trim().Split('\n'))
+            {
+                string[] p = linha.Split(',');
+                if (p.Length < 3) continue;
+
+                string codCercado = p[0].Trim();
+                string codDino    = p[1].Trim();
+                int qtd;
+                if (!int.TryParse(p[2].Trim(), out qtd)) continue;
+
+                if (!cercadosVisuais.ContainsKey(codCercado)) continue;
+
+                for (int i = 0; i < qtd; i++)
+                {
+                    string caminho = ObterCaminhoDino(codDino);
+                    if (string.IsNullOrEmpty(caminho)) continue;
+
+                    PictureBox pb = new PictureBox
+                    {
+                        Size     = new Size(30, 30),
+                        SizeMode = PictureBoxSizeMode.StretchImage
+                    };
+
+                    try { pb.Image = Image.FromFile(caminho); }
+                    catch { pb.BackColor = Color.Red; } // fallback se imagem não existir
+
+                    cercadosVisuais[codCercado].Controls.Add(pb);
+                }
+            }
+        }
+
+        private string ObterCaminhoDino(string cod)
+        {
+            string pasta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+            switch (cod)
+            {
+                case "Br": return Path.Combine(pasta, "braquiossauro.png");
+                case "Ep": return Path.Combine(pasta, "espinossauro.png");
+                case "Et": return Path.Combine(pasta, "estegossauro.png");
+                case "Pa": return Path.Combine(pasta, "parassaurolofo.png");
+                case "Ti": return Path.Combine(pasta, "tiranossauro.png");
+                case "Tr": return Path.Combine(pasta, "triceratops.png");
+                default: return "";
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
         // INICIAR
         // ─────────────────────────────────────────────────────────────
         private void btnIniciar_Click_1(object sender, EventArgs e)
         {
-            // Verifica se a partida já está ativa antes de tentar iniciar
             string retornoVerif = Jogo.VerificarPartida(idPartidaSelecionada);
             bool partidaJaAtiva = !string.IsNullOrEmpty(retornoVerif)
                                   && !retornoVerif.StartsWith("ERRO")
@@ -90,11 +204,9 @@ namespace projeto_integrador_entrega1
                 }
             }
 
-            // Inicia a partida
             string retorno = Jogo.Iniciar(meuId, minhaSenha);
             if (VerificarErroSilencioso(retorno))
             {
-                // Outro jogador pode ter iniciado — tenta entrar
                 retornoVerif = Jogo.VerificarPartida(idPartidaSelecionada);
                 if (!string.IsNullOrEmpty(retornoVerif) && !retornoVerif.StartsWith("ERRO"))
                 {
@@ -153,7 +265,6 @@ namespace projeto_integrador_entrega1
             string hora = DateTime.Now.ToString("HH:mm:ss");
             Log($"── TICK #{tickCount} [{hora}] ──────────────────────");
 
-            // PASSO 1: VerificarPartida — estado geral da partida
             string retorno = Jogo.VerificarPartida(idPartidaSelecionada);
             if (string.IsNullOrEmpty(retorno) || retorno.StartsWith("ERRO"))
             {
@@ -164,12 +275,11 @@ namespace projeto_integrador_entrega1
             string[] dados = retorno.Replace("\r", "").Trim().Split(',');
             if (dados.Length < 5) { Log($"  ⚠ Retorno incompleto: \"{retorno}\""); return; }
 
-            // Formato: StatusPartida, Turno, StatusTurno, IdJogadorComDado, FaceDado
-            string statusPartida = dados[0].Trim(); // J = jogando, E = encerrada
+            string statusPartida = dados[0].Trim();
             int novoTurno;
             if (!int.TryParse(dados[1].Trim(), out novoTurno)) return;
 
-            string statusTurno = dados[2].Trim();   // A = aberto, F = fechado
+            string statusTurno = dados[2].Trim();
             idJogadorComDado = Convert.ToInt32(dados[3].Trim());
             faceDadoAtual = dados[4].Trim();
 
@@ -188,13 +298,11 @@ namespace projeto_integrador_entrega1
             Log($"  Status    : {(partidaAtiva ? "Em andamento" : "ENCERRADA")}");
             Log($"  Meu ID    : {meuId}");
             Log($"  Dado com  : {nomeDono} (ID {idJogadorComDado})");
-            Log($"  Condição  : {nomeFace} {(euTenhoDado ? "★ (eu tenho — jogo livre)" : "")}");
+            Log($"  Condição  : {nomeFace}{(euTenhoDado ? " ★ (eu tenho — jogo livre)" : "")}");
 
             lblTurnoInfo.Text = $"Turno: {turnoAtual} | Dado: {nomeDono}{(euTenhoDado ? " ★" : "")} | {nomeFace} | {(partidaAtiva ? "Em andamento" : "Encerrada")}";
             AtualizarJogadores();
-
-            if (Application.OpenForms["Form4"] is Form4 f4)
-                f4.AtualizarMapa(meuId, minhaSenha);
+            AtualizarMapa(); // atualiza o mapa embutido a cada tick
 
             if (!partidaAtiva)
             {
@@ -206,8 +314,7 @@ namespace projeto_integrador_entrega1
                 return;
             }
 
-            // PASSO 2: VerificarTurno — checa se EU já joguei neste turno
-            // Retorno: StatusTurno, IdJogadorComDado, FaceDado, [IdJogador, CodDino, CodCercado, ...]
+            // Verifica se já joguei neste turno via VerificarTurno
             string retornoTurno = Jogo.VerificarTurno(idPartidaSelecionada, turnoAtual);
             Log($"  VerificarTurno raw: \"{retornoTurno?.Trim()}\"");
 
@@ -217,12 +324,11 @@ namespace projeto_integrador_entrega1
             if (euJaJoguei)
             {
                 Log("  ⏳ Aguardando outros jogadores...");
-                LogTabuleiro();
                 Log("");
                 return;
             }
 
-            // PASSO 3: Minha vez — busca informações e joga
+            // Minha vez de jogar
             tmrPrincipal.Stop();
 
             Log($"  ★ JOGANDO! {(euTenhoDado ? "Livre (tenho o dado)" : $"Condição: {nomeFace}")}");
@@ -240,7 +346,6 @@ namespace projeto_integrador_entrega1
                 return;
             }
 
-            // PASSO 4: Decisão
             string codDino = null;
             string cercado = null;
             EscolherMelhorJogada(mao, tabuleiro, out codDino, out cercado);
@@ -249,7 +354,6 @@ namespace projeto_integrador_entrega1
             string nomeC = nomesCercados.ContainsKey(cercado) ? nomesCercados[cercado] : cercado;
             Log($"  Decisão: {nomeD} → {nomeC}");
 
-            // PASSO 5: Jogar
             string resultado = Jogo.Jogar(meuId, minhaSenha, codDino, cercado);
             Log($"  Resultado: \"{resultado?.Trim()}\"");
 
@@ -258,9 +362,7 @@ namespace projeto_integrador_entrega1
                 lblTurnoInfo.Text = $"🤖 Turno {turnoAtual}: {nomeD} → {nomeC}";
                 Log($"  ✅ Jogada registrada! Aguardando outros concluírem o turno {turnoAtual}...");
                 LogTabuleiro();
-
-                if (Application.OpenForms["Form4"] is Form4 f4b)
-                    f4b.AtualizarMapa(meuId, minhaSenha);
+                AtualizarMapa();
             }
             else
             {
@@ -272,32 +374,26 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
-        // Verifica na lista de jogadas do turno se meu ID já aparece
-        // Retorno do VerificarTurno:
-        //   linha 1: StatusTurno, IdComDado, FaceDado
-        //   linhas seguintes: IdJogador, CodDino, CodCercado
+        // EuJaJogueiNesTurno — lê lista de jogadas do VerificarTurno
         // ─────────────────────────────────────────────────────────────
         private bool EuJaJogueiNesTurno(string retornoTurno)
         {
             if (string.IsNullOrEmpty(retornoTurno) || retornoTurno.StartsWith("ERRO"))
-                return false; // se não conseguiu verificar, tenta jogar
+                return false;
 
             string[] linhas = retornoTurno.Replace("\r", "").Trim().Split('\n');
 
-            // A partir da segunda linha vêm as jogadas: IdJogador,CodDino,CodCercado
+            // Linha 0: StatusTurno, IdComDado, FaceDado
+            // Linhas 1+: IdJogador, CodDino, CodCercado
             for (int i = 1; i < linhas.Length; i++)
             {
                 string linha = linhas[i].Trim();
                 if (string.IsNullOrEmpty(linha)) continue;
-
                 string[] partes = linha.Split(',');
-                if (partes.Length < 1) continue;
-
                 int idNaLinha;
                 if (int.TryParse(partes[0].Trim(), out idNaLinha) && idNaLinha == meuId)
-                    return true; // meu ID está na lista de jogadas — já joguei
+                    return true;
             }
-
             return false;
         }
 
@@ -422,7 +518,7 @@ namespace projeto_integrador_entrega1
                 case "CD": return !cont.Contains(dino);
                 case "PA": return true;
                 case "RI": return true;
-                default: return true;
+                default:   return true;
             }
         }
 
@@ -475,49 +571,13 @@ namespace projeto_integrador_entrega1
         // ─────────────────────────────────────────────────────────────
         // BOTÕES — mantidos para o Designer compilar
         // ─────────────────────────────────────────────────────────────
-        private void btnVerificarTurno_Click(object sender, EventArgs e)
-        {
-            string retorno = Jogo.VerificarPartida(idPartidaSelecionada);
-            if (VerificarErro(retorno)) return;
-            string[] dados = retorno.Replace("\r", "").Trim().Split(',');
-            idJogadorComDado = Convert.ToInt32(dados[3].Trim());
-            faceDadoAtual = dados[4].Trim();
-            string nomeJogador = BuscarNomeJogador(idJogadorComDado);
-            string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
-            lblTurnoInfo.Text = $"Turno: {dados[1].Trim()} | Dado: {nomeJogador} | {nomeFace}";
-        }
-
-        private void btnVerMao_Click(object sender, EventArgs e)
-        {
-            string retorno = Jogo.ExibirMao(meuId, minhaSenha);
-            if (VerificarErro(retorno)) return;
-            lstMao.Items.Clear();
-            foreach (string d in retorno.Replace("\r", "").Trim().Split('\n'))
-            {
-                if (string.IsNullOrEmpty(d)) continue;
-                string[] partes = d.Trim().Split(',');
-                if (partes.Length < 2) continue;
-                string codigo = partes[0].Trim();
-                string nome = nomesDinos.ContainsKey(codigo) ? nomesDinos[codigo] : codigo;
-                int qtd;
-                if (!int.TryParse(partes[1].Trim(), out qtd)) continue;
-                lstMao.Items.Add($"{codigo} : {nome} (x{qtd})");
-            }
-        }
-
+        private void btnVerificarTurno_Click(object sender, EventArgs e) { }
+        private void btnVerMao_Click(object sender, EventArgs e) { }
         private void btnCarregarMao_Click(object sender, EventArgs e) { }
         private void btnCarregarMao_Click_1(object sender, EventArgs e) { }
         private void btnJogar_Click(object sender, EventArgs e) { }
         private void btnJogar_Click_1(object sender, EventArgs e) { }
-
-        private void btnVerTabuleiro_Click(object sender, EventArgs e)
-        {
-            Form4 f = (Form4)Application.OpenForms["Form4"];
-            if (f == null) { f = new Form4(); f.Name = "Form4"; f.Show(); }
-            else f.BringToFront();
-            f.AtualizarMapa(meuId, minhaSenha);
-        }
-
+        private void btnVerTabuleiro_Click(object sender, EventArgs e) { }
         private void btnAtualizarJogadores_Click(object sender, EventArgs e) => AtualizarJogadores();
 
         private void button1_Click(object sender, EventArgs e)
@@ -595,7 +655,7 @@ namespace projeto_integrador_entrega1
                 case "WC": return codCercado == "RS";
                 case "TI": return CercadoSemTRex(codCercado);
                 case "VZ": return CercadoVazio(codCercado);
-                default: return true;
+                default:   return true;
             }
         }
 
@@ -683,6 +743,11 @@ namespace projeto_integrador_entrega1
         }
 
         private void lblTurnoInfo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }

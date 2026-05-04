@@ -61,8 +61,8 @@
             this.txtTabuleiro = new System.Windows.Forms.TextBox();
             this.tmrPrincipal = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.pbMapa = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -382,14 +382,15 @@
             this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // pictureBox1
+            // pbMapa
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(652, 39);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(641, 634);
-            this.pictureBox1.TabIndex = 45;
-            this.pictureBox1.TabStop = false;
+            this.pbMapa.Image = ((System.Drawing.Image)(resources.GetObject("pbMapa.Image")));
+            this.pbMapa.Location = new System.Drawing.Point(652, 39);
+            this.pbMapa.Name = "pbMapa";
+            this.pbMapa.Size = new System.Drawing.Size(641, 634);
+            this.pbMapa.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbMapa.TabIndex = 45;
+            this.pbMapa.TabStop = false;
             // 
             // Form1
             // 
@@ -397,7 +398,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Aquamarine;
             this.ClientSize = new System.Drawing.Size(1330, 760);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pbMapa);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAdicionarJogador);
             this.Controls.Add(this.btnIniciar);
@@ -430,7 +431,8 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -468,7 +470,7 @@
         private System.Windows.Forms.TextBox txtTabuleiro;
         private System.Windows.Forms.Timer tmrPrincipal;
         private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pbMapa;
     }
 }
 
