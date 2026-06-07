@@ -46,15 +46,10 @@
             this.lblinfot = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.lblTurnoInfo = new System.Windows.Forms.Label();
-            this.cmbDino = new System.Windows.Forms.ComboBox();
             this.btnVerificarTurno = new System.Windows.Forms.Button();
-            this.cmbCercado = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.btnCarregarMao = new System.Windows.Forms.Button();
-            this.btnJogar = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.btnVerTabuleiro = new System.Windows.Forms.Button();
             this.btnIniciar = new System.Windows.Forms.Button();
             this.btnAdicionarJogador = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -250,16 +245,6 @@
             this.lblTurnoInfo.Text = "turno";
             this.lblTurnoInfo.Click += new System.EventHandler(this.lblTurnoInfo_Click);
             // 
-            // cmbDino
-            // 
-            this.cmbDino.FormattingEnabled = true;
-            this.cmbDino.Location = new System.Drawing.Point(397, 312);
-            this.cmbDino.Name = "cmbDino";
-            this.cmbDino.Size = new System.Drawing.Size(121, 21);
-            this.cmbDino.TabIndex = 29;
-            this.cmbDino.Text = "Dinossauro";
-            this.cmbDino.SelectedIndexChanged += new System.EventHandler(this.cmbDino_SelectedIndexChanged);
-            // 
             // btnVerificarTurno
             // 
             this.btnVerificarTurno.Location = new System.Drawing.Point(397, 500);
@@ -269,16 +254,6 @@
             this.btnVerificarTurno.Text = "Verificar Turno";
             this.btnVerificarTurno.UseVisualStyleBackColor = true;
             // 
-            // cmbCercado
-            // 
-            this.cmbCercado.FormattingEnabled = true;
-            this.cmbCercado.Location = new System.Drawing.Point(397, 288);
-            this.cmbCercado.Name = "cmbCercado";
-            this.cmbCercado.Size = new System.Drawing.Size(121, 21);
-            this.cmbCercado.TabIndex = 31;
-            this.cmbCercado.Text = "Cercado";
-            this.cmbCercado.SelectedIndexChanged += new System.EventHandler(this.cmbCercado_SelectedIndexChanged);
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -286,26 +261,6 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(0, 13);
             this.label10.TabIndex = 34;
-            // 
-            // btnCarregarMao
-            // 
-            this.btnCarregarMao.Location = new System.Drawing.Point(397, 339);
-            this.btnCarregarMao.Name = "btnCarregarMao";
-            this.btnCarregarMao.Size = new System.Drawing.Size(95, 25);
-            this.btnCarregarMao.TabIndex = 36;
-            this.btnCarregarMao.Text = "Carregar Mão";
-            this.btnCarregarMao.UseVisualStyleBackColor = true;
-            this.btnCarregarMao.Click += new System.EventHandler(this.btnCarregarMao_Click);
-            // 
-            // btnJogar
-            // 
-            this.btnJogar.Location = new System.Drawing.Point(397, 370);
-            this.btnJogar.Name = "btnJogar";
-            this.btnJogar.Size = new System.Drawing.Size(95, 25);
-            this.btnJogar.TabIndex = 37;
-            this.btnJogar.Text = "Jogar";
-            this.btnJogar.UseVisualStyleBackColor = true;
-            this.btnJogar.Click += new System.EventHandler(this.btnJogar_Click);
             // 
             // label13
             // 
@@ -328,16 +283,6 @@
             this.label14.Text = "Log da Partida";
             this.label14.Click += new System.EventHandler(this.label14_Click);
             // 
-            // btnVerTabuleiro
-            // 
-            this.btnVerTabuleiro.Location = new System.Drawing.Point(333, 165);
-            this.btnVerTabuleiro.Name = "btnVerTabuleiro";
-            this.btnVerTabuleiro.Size = new System.Drawing.Size(95, 25);
-            this.btnVerTabuleiro.TabIndex = 41;
-            this.btnVerTabuleiro.Text = "Ver Tabuleiro";
-            this.btnVerTabuleiro.UseVisualStyleBackColor = true;
-            this.btnVerTabuleiro.Click += new System.EventHandler(this.btnVerTabuleiro_Click);
-            // 
             // btnIniciar
             // 
             this.btnIniciar.Location = new System.Drawing.Point(333, 84);
@@ -354,7 +299,7 @@
             this.btnAdicionarJogador.Name = "btnAdicionarJogador";
             this.btnAdicionarJogador.Size = new System.Drawing.Size(115, 32);
             this.btnAdicionarJogador.TabIndex = 43;
-            this.btnAdicionarJogador.Text = "Adicionar Jogador";
+            this.btnAdicionarJogador.Text = "Logar em Partida";
             this.btnAdicionarJogador.UseVisualStyleBackColor = true;
             this.btnAdicionarJogador.Click += new System.EventHandler(this.btnAdicionarJogador_Click);
             // 
@@ -402,16 +347,11 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAdicionarJogador);
             this.Controls.Add(this.btnIniciar);
-            this.Controls.Add(this.btnVerTabuleiro);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.txtTabuleiro);
-            this.Controls.Add(this.btnJogar);
-            this.Controls.Add(this.btnCarregarMao);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.cmbCercado);
             this.Controls.Add(this.btnVerificarTurno);
-            this.Controls.Add(this.cmbDino);
             this.Controls.Add(this.lblTurnoInfo);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.lblinfot);
@@ -455,15 +395,10 @@
         private System.Windows.Forms.Label lblinfot;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label lblTurnoInfo;
-        private System.Windows.Forms.ComboBox cmbDino;
         private System.Windows.Forms.Button btnVerificarTurno;
-        private System.Windows.Forms.ComboBox cmbCercado;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button btnCarregarMao;
-        private System.Windows.Forms.Button btnJogar;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Button btnVerTabuleiro;
         private System.Windows.Forms.Button btnIniciar;
         private System.Windows.Forms.Button btnAdicionarJogador;
         private System.Windows.Forms.Label label1;
