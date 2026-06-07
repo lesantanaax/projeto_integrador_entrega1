@@ -215,7 +215,7 @@
             this.lblinfot.AutoSize = true;
             this.lblinfot.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblinfot.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblinfot.Location = new System.Drawing.Point(394, 478);
+            this.lblinfot.Location = new System.Drawing.Point(11, 684);
             this.lblinfot.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblinfot.Name = "lblinfot";
             this.lblinfot.Size = new System.Drawing.Size(147, 16);
@@ -238,7 +238,7 @@
             // lblTurnoInfo
             // 
             this.lblTurnoInfo.AutoSize = true;
-            this.lblTurnoInfo.Location = new System.Drawing.Point(397, 534);
+            this.lblTurnoInfo.Location = new System.Drawing.Point(1299, 160);
             this.lblTurnoInfo.Name = "lblTurnoInfo";
             this.lblTurnoInfo.Size = new System.Drawing.Size(31, 13);
             this.lblTurnoInfo.TabIndex = 28;
@@ -247,7 +247,7 @@
             // 
             // btnVerificarTurno
             // 
-            this.btnVerificarTurno.Location = new System.Drawing.Point(397, 500);
+            this.btnVerificarTurno.Location = new System.Drawing.Point(14, 717);
             this.btnVerificarTurno.Name = "btnVerificarTurno";
             this.btnVerificarTurno.Size = new System.Drawing.Size(115, 31);
             this.btnVerificarTurno.TabIndex = 30;
@@ -342,7 +342,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Aquamarine;
-            this.ClientSize = new System.Drawing.Size(1330, 760);
+            this.ClientSize = new System.Drawing.Size(1492, 760);
             this.Controls.Add(this.pbMapa);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAdicionarJogador);
