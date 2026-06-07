@@ -17,6 +17,8 @@ namespace projeto_integrador_entrega1
         private int idJogadorComDado = 0;
         private int turnoAtual = 0;
         private int tickCount = 0;
+        private PictureBox pbDadoFace;
+        private Label lblDadoFace;
         //─────────────────────────────────────────────────────────────
         //MAPA EMBUTIDO
         //─────────────────────────────────────────────────────────────
@@ -54,6 +56,17 @@ namespace projeto_integrador_entrega1
             { "Tr", "Tricerátops" }
         };
 
+        
+
+        private Dictionary<string, string> imagensFacesDado = new Dictionary<string, string>
+{
+            { "AL", "dado_AL.png" },
+            { "FL", "dado_FL.png" },
+            { "PR", "dado_PR.png" },
+            { "TI", "dado_TI.png" },
+            { "VZ", "dado_VZ.png" },
+            { "WC", "dado_WC.png" }
+};
         public Form1()
         {
             InitializeComponent();
@@ -64,6 +77,7 @@ namespace projeto_integrador_entrega1
 
             // Cria os fields do mapa sobre a picturebox do tabuleiro
             CriarFieldsMapa();
+            CriarAreaDado();
         }
 
         public Form1(int id, string senha, int idPartida) : this()
@@ -175,6 +189,71 @@ namespace projeto_integrador_entrega1
             }
         }
 
+        private void CriarAreaDado()
+        {
+            lblDadoFace = new Label
+            {
+                Text = "Dado",
+                AutoSize = true,
+                Location = new Point(pbMapa.Right + 15, pbMapa.Top),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+            };
+
+            pbDadoFace = new PictureBox
+            {
+                Size = new Size(90, 90),
+                Location = new Point(pbMapa.Right + 15, pbMapa.Top + 25),
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White
+            };
+
+            this.Controls.Add(lblDadoFace);
+            this.Controls.Add(pbDadoFace);
+            lblDadoFace.BringToFront();
+            pbDadoFace.BringToFront();
+        }
+
+        private void AtualizarImagemDado()
+        {
+            if (pbDadoFace == null || string.IsNullOrEmpty(faceDadoAtual)) return;
+
+            string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
+            lblDadoFace.Text = "Dado: " + nomeFace;
+
+            string pasta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+            string arquivo = imagensFacesDado.ContainsKey(faceDadoAtual) ? imagensFacesDado[faceDadoAtual] : "";
+            string caminho = Path.Combine(pasta, arquivo);
+
+            if (File.Exists(caminho))
+            {
+                if (pbDadoFace.Image != null) pbDadoFace.Image.Dispose();
+                pbDadoFace.Image = Image.FromFile(caminho);
+            }
+            else
+            {
+                pbDadoFace.Image = CriarImagemDadoFallback(faceDadoAtual);
+            }
+        }
+
+        private Image CriarImagemDadoFallback(string texto)
+        {
+            Bitmap bmp = new Bitmap(90, 90);
+            using (Graphics g = Graphics.FromImage(bmp))
+            using (Font fonte = new Font("Segoe UI", 22, FontStyle.Bold))
+            using (Brush fundo = new SolidBrush(Color.White))
+            using (Brush textoBrush = new SolidBrush(Color.Black))
+            using (Pen borda = new Pen(Color.Black, 3))
+            {
+                g.FillRectangle(fundo, 0, 0, 90, 90);
+                g.DrawRectangle(borda, 4, 4, 82, 82);
+
+                SizeF tam = g.MeasureString(texto, fonte);
+                g.DrawString(texto, fonte, textoBrush, (90 - tam.Width) / 2, (90 - tam.Height) / 2);
+            }
+            return bmp;
+        }
+
         // ─────────────────────────────────────────────────────────────
         // INICIAR
         // ─────────────────────────────────────────────────────────────
@@ -277,6 +356,7 @@ namespace projeto_integrador_entrega1
             string statusTurno = dados[2].Trim();
             idJogadorComDado = Convert.ToInt32(dados[3].Trim());
             faceDadoAtual = dados[4].Trim();
+            AtualizarImagemDado();
 
             if (novoTurno != turnoAtual)
             {
@@ -305,6 +385,7 @@ namespace projeto_integrador_entrega1
                 Log("");
                 Log("🏁 PARTIDA ENCERRADA!");
                 LogTabuleiro();
+                MostrarPontuacaoFinal();
                 btnIniciar.Enabled = true;
                 return;
             }
@@ -412,6 +493,151 @@ namespace projeto_integrador_entrega1
                     Log($"    {nomeCerc}: {nd} x{dc.Value}");
                 }
             }
+        }
+
+        private void MostrarPontuacaoFinal()
+        {
+            Log("");
+            Log("=== PONTUAÇÃO FINAL ===");
+
+            string oficial = Jogo.ListarPontuacao(meuId);
+            if (!string.IsNullOrEmpty(oficial) && !oficial.StartsWith("ERRO"))
+            {
+                Log("Pontuação oficial da DLL:");
+                Log(oficial.Trim());
+            }
+
+            var tabuleiro = CarregarTabuleiro();
+            int calculada = CalcularPontuacaoFinal(tabuleiro);
+
+            Log("");
+            Log("Pontuação calculada pelo programa: " + calculada + " pontos");
+        }
+
+        private int CalcularPontuacaoFinal(Dictionary<string, List<string>> tab)
+        {
+            int total = 0;
+
+            total += PontuarQuantidade(tab, "CD", new int[] { 0, 1, 3, 6, 10, 15, 21 });
+            total += PontuarQuantidade(tab, "FI", new int[] { 0, 2, 4, 8, 12, 18, 24 });
+
+            if (tab.ContainsKey("IS") && tab["IS"].Count == 1)
+            {
+                string dino = tab["IS"][0];
+                if (ContarDinoNoZoo(tab, dino) == 1)
+                    total += 7;
+            }
+
+            if (tab.ContainsKey("MT") && tab["MT"].Count == 3)
+                total += 7;
+
+            if (tab.ContainsKey("PA"))
+                total += PontuarPradariaDoAmor(tab["PA"]);
+
+            if (tab.ContainsKey("RI"))
+                total += tab["RI"].Count;
+
+            total += PontuarReiDaSelva(tab);
+
+            return total;
+        }
+
+        private int PontuarQuantidade(Dictionary<string, List<string>> tab, string cercado, int[] pontos)
+        {
+            if (!tab.ContainsKey(cercado)) return 0;
+
+            int qtd = tab[cercado].Count;
+            if (qtd < 0) qtd = 0;
+            if (qtd >= pontos.Length) qtd = pontos.Length - 1;
+
+            return pontos[qtd];
+        }
+
+        private int PontuarPradariaDoAmor(List<string> dinos)
+        {
+            int pontos = 0;
+            var contagem = new Dictionary<string, int>();
+
+            foreach (string d in dinos)
+            {
+                if (!contagem.ContainsKey(d)) contagem[d] = 0;
+                contagem[d]++;
+            }
+
+            foreach (var kv in contagem)
+                pontos += (kv.Value / 2) * 5;
+
+            return pontos;
+        }
+
+        private int PontuarReiDaSelva(Dictionary<string, List<string>> tab)
+        {
+            if (!tab.ContainsKey("RS") || tab["RS"].Count != 1)
+                return 0;
+
+            string dinoRei = tab["RS"][0];
+            int minhaQtd = ContarDinoNoZoo(tab, dinoRei);
+
+            string jogadoresRaw = Jogo.ListarJogadores(idPartidaSelecionada);
+            if (string.IsNullOrEmpty(jogadoresRaw) || jogadoresRaw.StartsWith("ERRO"))
+                return 0;
+
+            foreach (string linha in jogadoresRaw.Replace("\r", "").Trim().Split('\n'))
+            {
+                string[] p = linha.Split(',');
+                if (p.Length < 1) continue;
+
+                int idJogador;
+                if (!int.TryParse(p[0].Trim(), out idJogador)) continue;
+
+                var tabOutro = CarregarTabuleiroDeJogador(idJogador);
+                int qtdOutro = ContarDinoNoZoo(tabOutro, dinoRei);
+
+                if (qtdOutro > minhaQtd)
+                    return 0;
+            }
+
+            return 7;
+        }
+
+        private Dictionary<string, List<string>> CarregarTabuleiroDeJogador(int idJogador)
+        {
+            var tabuleiro = new Dictionary<string, List<string>>();
+            string raw = Jogo.ExibirTabuleiro(idJogador);
+
+            if (string.IsNullOrEmpty(raw) || raw.StartsWith("ERRO"))
+                return tabuleiro;
+
+            foreach (string linha in raw.Replace("\r", "").Trim().Split('\n'))
+            {
+                string[] p = linha.Trim().Split(',');
+                if (p.Length < 3) continue;
+
+                string cercado = p[0].Trim();
+                string dino = p[1].Trim();
+
+                int qtd;
+                if (!int.TryParse(p[2].Trim(), out qtd)) continue;
+
+                if (!tabuleiro.ContainsKey(cercado))
+                    tabuleiro[cercado] = new List<string>();
+
+                for (int i = 0; i < qtd; i++)
+                    tabuleiro[cercado].Add(dino);
+            }
+
+            return tabuleiro;
+        }
+
+        private int ContarDinoNoZoo(Dictionary<string, List<string>> tab, string dino)
+        {
+            int total = 0;
+
+            foreach (var cercado in tab.Values)
+                foreach (string d in cercado)
+                    if (d == dino) total++;
+
+            return total;
         }
 
         private void Log(string msg)
