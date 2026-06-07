@@ -21,6 +21,8 @@ namespace projeto_integrador_entrega1
         private bool processandoTick = false;
         private string ultimaJustificativaJogada = "";
         private int ultimoTurnoComPlacarExibido = 0;
+        private PictureBox pbDadoFace;
+        private Label lblDadoFace;
 
         private readonly int[] pontosCD = { 0, 1, 3, 6, 10, 15, 21 };
         private readonly int[] pontosFI = { 0, 2, 4, 8, 12, 18, 24 };
@@ -59,6 +61,17 @@ namespace projeto_integrador_entrega1
             { "Tr", "Tricerátops" }
         };
 
+        
+
+        private Dictionary<string, string> imagensFacesDado = new Dictionary<string, string>
+{
+            { "AL", "dado_AL.png" },
+            { "FL", "dado_FL.png" },
+            { "PR", "dado_PR.png" },
+            { "TI", "dado_TI.png" },
+            { "VZ", "dado_VZ.png" },
+            { "WC", "dado_WC.png" }
+};
         // MODELOS
 
         private class EstadoPartida
@@ -116,6 +129,7 @@ namespace projeto_integrador_entrega1
             tmrPrincipal.Tick += tmrPrincipal_Tick;
 
             CriarFieldsMapa();
+            CriarAreaDado();
         }
 
         public Form1(int id, string senha, int idPartida) : this()
@@ -268,6 +282,71 @@ namespace projeto_integrador_entrega1
             }
         }
 
+        private void CriarAreaDado()
+        {
+            lblDadoFace = new Label
+            {
+                Text = "Dado",
+                AutoSize = true,
+                Location = new Point(pbMapa.Right + 15, pbMapa.Top),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+            };
+
+            pbDadoFace = new PictureBox
+            {
+                Size = new Size(90, 90),
+                Location = new Point(pbMapa.Right + 15, pbMapa.Top + 25),
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White
+            };
+
+            this.Controls.Add(lblDadoFace);
+            this.Controls.Add(pbDadoFace);
+            lblDadoFace.BringToFront();
+            pbDadoFace.BringToFront();
+        }
+
+        private void AtualizarImagemDado()
+        {
+            if (pbDadoFace == null || string.IsNullOrEmpty(faceDadoAtual)) return;
+
+            string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
+            lblDadoFace.Text = "Dado: " + nomeFace;
+
+            string pasta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+            string arquivo = imagensFacesDado.ContainsKey(faceDadoAtual) ? imagensFacesDado[faceDadoAtual] : "";
+            string caminho = Path.Combine(pasta, arquivo);
+
+            if (File.Exists(caminho))
+            {
+                if (pbDadoFace.Image != null) pbDadoFace.Image.Dispose();
+                pbDadoFace.Image = Image.FromFile(caminho);
+            }
+            else
+            {
+                pbDadoFace.Image = CriarImagemDadoFallback(faceDadoAtual);
+            }
+        }
+
+        private Image CriarImagemDadoFallback(string texto)
+        {
+            Bitmap bmp = new Bitmap(90, 90);
+            using (Graphics g = Graphics.FromImage(bmp))
+            using (Font fonte = new Font("Segoe UI", 22, FontStyle.Bold))
+            using (Brush fundo = new SolidBrush(Color.White))
+            using (Brush textoBrush = new SolidBrush(Color.Black))
+            using (Pen borda = new Pen(Color.Black, 3))
+            {
+                g.FillRectangle(fundo, 0, 0, 90, 90);
+                g.DrawRectangle(borda, 4, 4, 82, 82);
+
+                SizeF tam = g.MeasureString(texto, fonte);
+                g.DrawString(texto, fonte, textoBrush, (90 - tam.Width) / 2, (90 - tam.Height) / 2);
+            }
+            return bmp;
+        }
+
         // INICIAR
 
         private void btnIniciar_Click_1(object sender, EventArgs e)
@@ -388,6 +467,7 @@ namespace projeto_integrador_entrega1
 
             int turnoAnterior = turnoAtual;
             bool turnoMudou = turnoAnterior > 0 && estado.Turno != turnoAnterior;
+            AtualizarImagemDado();
 
             if (turnoMudou)
                 LogInfoTick("TURNO", "Turno avançou de " + turnoAnterior + " para " + estado.Turno + ".");
@@ -522,7 +602,7 @@ namespace projeto_integrador_entrega1
                 Turno = turno,
                 StatusTurno = dados[2].Trim(),
                 IdJogadorComDado = idDado,
-                FaceDado = dados[4].Trim()
+                FaceDado = dados[4].Trim(),
             };
 
             return true;
