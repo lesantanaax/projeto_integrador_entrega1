@@ -18,6 +18,11 @@ namespace projeto_integrador_entrega1
         public Form2(int idPartida) : this()
         {
             idPartidaSelecionada = idPartida;
+            // Se o formulário já abrir recebendo um ID, preenche o campo na tela
+            if (idPartida > 0)
+            {
+                txtiddapartida.Text = idPartida.ToString();
+            }
         }
 
         // ===================== CRIAR PARTIDA =====================
@@ -43,8 +48,13 @@ namespace projeto_integrador_entrega1
                 return;
             }
 
+            // Define o ID da partida criada
             idPartidaSelecionada = Convert.ToInt32(retornoCriacao.Trim());
 
+            // Atualiza o novo campo na tela para o usuário ver o ID da partida que acabou de criar
+            txtiddapartida.Text = idPartidaSelecionada.ToString();
+
+            // Entra na partida criada automaticamente
             string retornoEntrar = Jogo.Entrar(idPartidaSelecionada, nomeJogador, senha);
 
             if (retornoEntrar.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase))
@@ -57,7 +67,6 @@ namespace projeto_integrador_entrega1
             meuId = Convert.ToInt32(dados[0]);
             minhaSenha = dados[1].Trim();
 
-            // ALTERAÇÃO AQUI: Em vez de criar Form1, devolvemos os dados
             FinalizarLogin();
         }
 
@@ -66,49 +75,49 @@ namespace projeto_integrador_entrega1
         {
             string nomeJogador = txtnome.Text;
             string senha = txtsenha.Text;
-            string grupo = "Colossais";
 
-            if (string.IsNullOrEmpty(nomeJogador) || string.IsNullOrEmpty(senha) || string.IsNullOrEmpty(grupo))
+            // 1. Validação dos campos de texto obrigatórios para o jogador
+            if (string.IsNullOrEmpty(nomeJogador) || string.IsNullOrEmpty(senha))
             {
-                MessageBox.Show("Preencha todos os campos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Preencha seu Nome e a Senha da partida para entrar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (idPartidaSelecionada == 0)
-                idPartidaSelecionada = BuscarIdPartidaPorGrupo(grupo);
-
-            if (idPartidaSelecionada == 0 || idPartidaSelecionada == -1)
+            // 2. Leitura direta do novo campo txtiddapartida
+            if (!string.IsNullOrEmpty(txtiddapartida.Text))
             {
-                DialogResult resposta = MessageBox.Show(
-                    "Nenhuma partida aberta encontrada.\nDeseja criar uma nova partida?",
-                    "Partida não encontrada",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
+                if (!int.TryParse(txtiddapartida.Text, out idPartidaSelecionada))
+                {
+                    MessageBox.Show("O campo ID da partida deve conter apenas números.", "Erro de Digitação", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
 
-                if (resposta == DialogResult.Yes)
-                    btncriar_Click(sender, e);
-
+            // 3. Validação de segurança caso o campo esteja vazio ou zerado
+            if (idPartidaSelecionada <= 0)
+            {
+                MessageBox.Show("Digite o ID da partida (ou selecione uma na lista) para poder entrar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            // 4. Executa o comando de entrada na DLL utilizando estritamente o ID garantido
             string retorno = Jogo.Entrar(idPartidaSelecionada, nomeJogador, senha);
 
             if (retorno.StartsWith("ERRO", StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show(retorno, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(retorno, "Erro ao entrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            // 5. Armazena os dados do jogador retornados pela DLL
             string[] dados = retorno.Split(',');
             meuId = Convert.ToInt32(dados[0]);
             minhaSenha = dados[1].Trim();
 
-            // ALTERAÇÃO AQUI: Em vez de criar Form1, devolvemos os dados
             FinalizarLogin();
         }
 
-        // Método auxiliar para evitar repetição de código
+        // Método auxiliar para finalização e retorno de dados para o Form principal
         private void FinalizarLogin()
         {
             this.Tag = $"{meuId},{minhaSenha},{idPartidaSelecionada}";
@@ -116,7 +125,7 @@ namespace projeto_integrador_entrega1
             this.Close();
         }
 
-        // ===================== AUXILIAR =====================
+        // Método antigo deixado aqui apenas por compatibilidade, mas não é mais usado no fluxo principal
         private int BuscarIdPartidaPorGrupo(string grupo)
         {
             string retorno = Jogo.ListarPartidas("A");
@@ -135,5 +144,10 @@ namespace projeto_integrador_entrega1
         private void textBox1_TextChanged(object sender, EventArgs e) { }
         private void textBox2_TextChanged(object sender, EventArgs e) { }
         private void textBox3_TextChanged(object sender, EventArgs e) { }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

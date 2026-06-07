@@ -17,8 +17,9 @@ namespace projeto_integrador_entrega1
         private int idJogadorComDado = 0;
         private int turnoAtual = 0;
         private int tickCount = 0;
-
-        // ── Mapa embutido (antes era Form4) ──────────────────────────
+        //─────────────────────────────────────────────────────────────
+        //MAPA EMBUTIDO
+        //─────────────────────────────────────────────────────────────
         private Dictionary<string, FlowLayoutPanel> cercadosVisuais = new Dictionary<string, FlowLayoutPanel>();
         private string pastaResources = @"C:\Users\bruno\source\repos\projeto_integrador_entrega1\Resources\";
 
@@ -75,15 +76,8 @@ namespace projeto_integrador_entrega1
             lblMinhaSenha.Text = "Minha Senha: " + minhaSenha;
         }
 
-        // ─────────────────────────────────────────────────────────────
-        // MAPA EMBUTIDO — lógica do Form4 trazida para cá
-        // Os FlowLayoutPanels são criados sobre a picturebox (pbMapa)
-        // Ajuste as coordenadas conforme sua imagem de fundo
-        // ─────────────────────────────────────────────────────────────
         private void CriarFieldsMapa()
         {
-            // Posição relativa à pbMapa (picturebox do tabuleiro no Form1)
-            // Ajuste os valores de Point e Size conforme seu layout
             var config = new Dictionary<string, (Point Pos, Size Tam)>
             {
                 { "CD", (new Point(395, 257), new Size(195, 134)) },
@@ -110,7 +104,7 @@ namespace projeto_integrador_entrega1
                     WrapContents = true
                 };
 
-                // Label de identificação (útil para ajuste visual)
+                // Label de identificação
                 Label lbl = new Label { Text = cod, AutoSize = true, BackColor = Color.Yellow };
                 field.Controls.Add(lbl);
 
@@ -254,9 +248,6 @@ namespace projeto_integrador_entrega1
             Log(Jogo.ListarFacesDado());
 
             btnIniciar.Enabled = false;
-            btnCarregarMao.Enabled = false;
-            btnJogar.Enabled = false;
-
             tmrPrincipal.Start();
         }
 
@@ -378,7 +369,7 @@ namespace projeto_integrador_entrega1
         }
 
         // ─────────────────────────────────────────────────────────────
-        // EuJaJogueiNesTurno — lê lista de jogadas do VerificarTurno
+        // EuJaJogueiNesseTurno — lê lista de jogadas do VerificarTurno
         // ─────────────────────────────────────────────────────────────
         private bool EuJaJogueiNesTurno(string retornoTurno)
         {
@@ -577,11 +568,6 @@ namespace projeto_integrador_entrega1
         // ─────────────────────────────────────────────────────────────
         private void btnVerificarTurno_Click(object sender, EventArgs e) { }
         private void btnVerMao_Click(object sender, EventArgs e) { }
-        private void btnCarregarMao_Click(object sender, EventArgs e) { }
-        private void btnCarregarMao_Click_1(object sender, EventArgs e) { }
-        private void btnJogar_Click(object sender, EventArgs e) { }
-        private void btnJogar_Click_1(object sender, EventArgs e) { }
-        private void btnVerTabuleiro_Click(object sender, EventArgs e) { }
         private void btnAtualizarJogadores_Click(object sender, EventArgs e) => AtualizarJogadores();
 
         private void button1_Click(object sender, EventArgs e)
@@ -737,23 +723,9 @@ namespace projeto_integrador_entrega1
         private void label11_Click_1(object sender, EventArgs e) { }
         private void label4_Click(object sender, EventArgs e) { }
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void cmbDino_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void cmbCercado_SelectedIndexChanged(object sender, EventArgs e) { }
         private void lblNomePartida_Click(object sender, EventArgs e) { }
-
-        private void label14_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblTurnoInfo_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void label14_Click(object sender, EventArgs e) { }
+        private void lblTurnoInfo_Click(object sender, EventArgs e) { }
+        private void Form1_Load(object sender, EventArgs e) { }
     }
 }
