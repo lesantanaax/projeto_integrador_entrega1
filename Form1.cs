@@ -298,14 +298,14 @@ namespace projeto_integrador_entrega1
             {
                 Text = "Dado",
                 AutoSize = true,
-                Location = new Point(pbMapa.Right + 15, pbMapa.Top),
+                Location = new Point(1152, 85),
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
 
             pbDadoFace = new PictureBox
             {
                 Size = new Size(90, 90),
-                Location = new Point(pbMapa.Right + 15, pbMapa.Top + 25),
+                Location = new Point(1130, 110),
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.White
@@ -2011,6 +2011,11 @@ namespace projeto_integrador_entrega1
         }
 
         private void lblinfot_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelHeader_Paint(object sender, PaintEventArgs e)
         {
 
         }
