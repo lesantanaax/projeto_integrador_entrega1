@@ -181,20 +181,13 @@ namespace projeto_integrador_entrega1
                     Name = "field_" + cod,
                     Location = kv.Value.Pos,
                     Size = kv.Value.Tam,
-                    BorderStyle = BorderStyle.FixedSingle,
-                    BackColor = Color.FromArgb(60, Color.Green),
+                    BorderStyle = BorderStyle.None,
+                    BackColor = Color.Transparent,
                     FlowDirection = FlowDirection.LeftToRight,
-                    WrapContents = true
+                    WrapContents = true,
+                    Padding = new Padding(2)
                 };
 
-                Label lbl = new Label
-                {
-                    Text = cod,
-                    AutoSize = true,
-                    BackColor = Color.Yellow
-                };
-
-                field.Controls.Add(lbl);
                 pbMapa.Controls.Add(field);
                 field.BringToFront();
 
@@ -222,8 +215,10 @@ namespace projeto_integrador_entrega1
                 {
                     PictureBox pb = new PictureBox
                     {
-                        Size = new Size(30, 30),
-                        SizeMode = PictureBoxSizeMode.StretchImage
+                        Size = new Size(50, 40),
+                        SizeMode = PictureBoxSizeMode.StretchImage,
+                        Margin = new Padding(1),
+                        BackColor = Color.Transparent
                     };
 
                     Image imagem = ObterImagemDino(codDino);
