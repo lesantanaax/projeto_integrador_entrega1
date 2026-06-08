@@ -60,11 +60,14 @@
             this.panelLeft = new System.Windows.Forms.Panel();
             this.panelMap = new System.Windows.Forms.Panel();
             this.panelRight = new System.Windows.Forms.Panel();
+            this.lblFaceDado = new System.Windows.Forms.Label();
+            this.pbFaceDado = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).BeginInit();
             this.panelHeader.SuspendLayout();
             this.panelLeft.SuspendLayout();
             this.panelMap.SuspendLayout();
             this.panelRight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbFaceDado)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -447,6 +450,8 @@
             // 
             this.panelRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(78)))), ((int)(((byte)(58)))));
             this.panelRight.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelRight.Controls.Add(this.lblFaceDado);
+            this.panelRight.Controls.Add(this.pbFaceDado);
             this.panelRight.Controls.Add(this.label11);
             this.panelRight.Controls.Add(this.lstMao);
             this.panelRight.Controls.Add(this.lblinfot);
@@ -455,6 +460,31 @@
             this.panelRight.Name = "panelRight";
             this.panelRight.Size = new System.Drawing.Size(266, 676);
             this.panelRight.TabIndex = 50;
+            // 
+            // lblFaceDado
+            // 
+            this.lblFaceDado.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblFaceDado.AutoSize = true;
+            this.lblFaceDado.BackColor = System.Drawing.Color.Transparent;
+            this.lblFaceDado.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFaceDado.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(194)))), ((int)(((byte)(82)))));
+            this.lblFaceDado.Location = new System.Drawing.Point(11, 20);
+            this.lblFaceDado.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblFaceDado.Name = "lblFaceDado";
+            this.lblFaceDado.Size = new System.Drawing.Size(36, 15);
+            this.lblFaceDado.TabIndex = 30;
+            this.lblFaceDado.Text = "Dado";
+            this.lblFaceDado.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblFaceDado.Click += new System.EventHandler(this.lblFaceDado_Click);
+            // 
+            // pbFaceDado
+            // 
+            this.pbFaceDado.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pbFaceDado.Location = new System.Drawing.Point(14, 38);
+            this.pbFaceDado.Name = "pbFaceDado";
+            this.pbFaceDado.Size = new System.Drawing.Size(90, 90);
+            this.pbFaceDado.TabIndex = 29;
+            this.pbFaceDado.TabStop = false;
             // 
             // Form1
             // 
@@ -484,6 +514,7 @@
             this.panelMap.PerformLayout();
             this.panelRight.ResumeLayout(false);
             this.panelRight.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbFaceDado)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -520,6 +551,8 @@
         private System.Windows.Forms.Panel panelLeft;
         private System.Windows.Forms.Panel panelMap;
         private System.Windows.Forms.Panel panelRight;
+        private System.Windows.Forms.Label lblFaceDado;
+        private System.Windows.Forms.PictureBox pbFaceDado;
     }
 }
 

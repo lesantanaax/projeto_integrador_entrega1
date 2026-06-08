@@ -21,8 +21,6 @@ namespace projeto_integrador_entrega1
         private bool processandoTick = false;
         private string ultimaJustificativaJogada = "";
         private int ultimoTurnoComPlacarExibido = 0;
-        private PictureBox pbDadoFace;
-        private Label lblDadoFace;
 
         private readonly int[] pontosCD = { 0, 1, 3, 6, 10, 15, 21 };
         private readonly int[] pontosFI = { 0, 2, 4, 8, 12, 18, 24 };
@@ -65,12 +63,12 @@ namespace projeto_integrador_entrega1
 
         private Dictionary<string, string> imagensFacesDado = new Dictionary<string, string>
 {
-            { "AL", "dado_AL.png" },
-            { "FL", "dado_FL.png" },
-            { "PR", "dado_PR.png" },
-            { "TI", "dado_TI.png" },
-            { "VZ", "dado_VZ.png" },
-            { "WC", "dado_WC.png" }
+            { "AL", "AL.png" },
+            { "FL", "FL.png" },
+            { "PR", "PR.png" },
+            { "TI", "TI.png" },
+            { "VZ", "VZ.png" },
+            { "WC", "WC.png" }
 };
         // MODELOS
 
@@ -144,7 +142,6 @@ namespace projeto_integrador_entrega1
             tmrPrincipal.Tick += tmrPrincipal_Tick;
 
             CriarFieldsMapa();
-            CriarAreaDado();
         }
 
         public Form1(int id, string senha, int idPartida) : this()
@@ -292,51 +289,77 @@ namespace projeto_integrador_entrega1
             }
         }
 
-        private void CriarAreaDado()
+        private PictureBox ObterPictureBoxDado()
         {
-            lblDadoFace = new Label
-            {
-                Text = "Dado",
-                AutoSize = true,
-                Location = new Point(1152, 85),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
-            };
+            Control[] controles = this.Controls.Find("pbFaceDado", true);
 
-            pbDadoFace = new PictureBox
-            {
-                Size = new Size(90, 90),
-                Location = new Point(1130, 110),
-                SizeMode = PictureBoxSizeMode.StretchImage,
-                BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.White
-            };
+            if (controles.Length == 0)
+                controles = this.Controls.Find("pbfacedado", true);
 
-            this.Controls.Add(lblDadoFace);
-            this.Controls.Add(pbDadoFace);
-            lblDadoFace.BringToFront();
-            pbDadoFace.BringToFront();
+            if (controles.Length == 0)
+                return null;
+
+            return controles[0] as PictureBox;
+        }
+
+        private Label ObterLabelDado()
+        {
+            Control[] controles = this.Controls.Find("lblFaceDado", true);
+
+            if (controles.Length == 0)
+                controles = this.Controls.Find("lblfacedado", true);
+
+            if (controles.Length == 0)
+                return null;
+
+            return controles[0] as Label;
         }
 
         private void AtualizarImagemDado()
         {
-            if (pbDadoFace == null || string.IsNullOrEmpty(faceDadoAtual)) return;
+            PictureBox pictureBoxDado = ObterPictureBoxDado();
+            Label labelDado = ObterLabelDado();
 
-            string nomeFace = nomesFaces.ContainsKey(faceDadoAtual) ? nomesFaces[faceDadoAtual] : faceDadoAtual;
-            lblDadoFace.Text = "Dado: " + nomeFace;
+            if (pictureBoxDado == null || labelDado == null)
+                return;
+
+            if (string.IsNullOrEmpty(faceDadoAtual))
+            {
+                labelDado.Text = "Dado";
+
+                Image imagemAtual = pictureBoxDado.Image;
+                pictureBoxDado.Image = null;
+
+                if (imagemAtual != null)
+                    imagemAtual.Dispose();
+
+                return;
+            }
+
+            string nomeFace = nomesFaces.ContainsKey(faceDadoAtual)
+                ? nomesFaces[faceDadoAtual]
+                : faceDadoAtual;
+
+            labelDado.Text = "Dado: " + nomeFace;
 
             string pasta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
             string arquivo = imagensFacesDado.ContainsKey(faceDadoAtual) ? imagensFacesDado[faceDadoAtual] : "";
             string caminho = Path.Combine(pasta, arquivo);
 
-            if (File.Exists(caminho))
-            {
-                if (pbDadoFace.Image != null) pbDadoFace.Image.Dispose();
-                pbDadoFace.Image = Image.FromFile(caminho);
-            }
+            Image novaImagem = null;
+
+            if (!string.IsNullOrEmpty(arquivo) && File.Exists(caminho))
+                novaImagem = Image.FromFile(caminho);
             else
-            {
-                pbDadoFace.Image = CriarImagemDadoFallback(faceDadoAtual);
-            }
+                novaImagem = CriarImagemDadoFallback(faceDadoAtual);
+
+            Image imagemAntiga = pictureBoxDado.Image;
+
+            pictureBoxDado.Image = novaImagem;
+            pictureBoxDado.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            if (imagemAntiga != null)
+                imagemAntiga.Dispose();
         }
 
         private Image CriarImagemDadoFallback(string texto)
@@ -478,12 +501,12 @@ namespace projeto_integrador_entrega1
 
             int turnoAnterior = turnoAtual;
             bool turnoMudou = turnoAnterior > 0 && estado.Turno != turnoAnterior;
-            AtualizarImagemDado();
 
             if (turnoMudou)
                 LogInfoTick("TURNO", "Turno avançou de " + turnoAnterior + " para " + estado.Turno + ".");
 
             AplicarEstadoPartida(estado);
+            AtualizarImagemDado();
 
             List<JogadorInfo> jogadores = CarregarJogadores();
             string nomeDono = BuscarNomeJogador(idJogadorComDado, jogadores);
@@ -2016,6 +2039,11 @@ namespace projeto_integrador_entrega1
         }
 
         private void panelHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblFaceDado_Click(object sender, EventArgs e)
         {
 
         }
