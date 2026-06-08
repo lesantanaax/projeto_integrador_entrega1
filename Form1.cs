@@ -61,7 +61,7 @@ namespace projeto_integrador_entrega1
             { "Tr", "Tricerátops" }
         };
 
-        
+
 
         private Dictionary<string, string> imagensFacesDado = new Dictionary<string, string>
 {
@@ -116,13 +116,28 @@ namespace projeto_integrador_entrega1
             public int Total { get; set; }
         }
 
+        private class MaoVisualItem
+        {
+            public string CodDino { get; set; }
+            public string NomeDino { get; set; }
+            public int Quantidade { get; set; }
+            public Image Imagem { get; set; }
+
+            public override string ToString()
+            {
+                return NomeDino + " x" + Quantidade;
+            }
+        }
+
         // CONSTRUTORES
 
         public Form1()
         {
             InitializeComponent();
 
-            label4.Text = Jogo.versao;
+            ConfigurarListaMaoSimples();
+
+            label3.Text = Jogo.versao;
 
             tmrPrincipal.Interval = 5000;
             tmrPrincipal.Tick -= tmrPrincipal_Tick;
@@ -399,6 +414,7 @@ namespace projeto_integrador_entrega1
         private void IniciarModoAutonomo(string mensagem)
         {
             txtTabuleiro.Clear();
+            lstMao.Items.Clear();
             tickCount = 0;
             processandoTick = false;
             ultimoTurnoComPlacarExibido = 0;
@@ -522,6 +538,8 @@ namespace projeto_integrador_entrega1
 
             string maoRaw = Jogo.ExibirMao(meuId, minhaSenha);
             Dictionary<string, int> mao = ParsearMaoDetalhada(maoRaw);
+
+            AtualizarMaoVisualSimples(mao);
 
             LogInfoTick("MÃO", FormatarMao(mao));
 
@@ -883,6 +901,112 @@ namespace projeto_integrador_entrega1
             }
 
             return string.Join(", ", partes);
+        }
+
+
+        private void ConfigurarListaMaoSimples()
+        {
+            lstMao.DrawMode = DrawMode.OwnerDrawFixed;
+            lstMao.ItemHeight = 44;
+            lstMao.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lstMao.BackColor = Color.FromArgb(238, 235, 220);
+            lstMao.ForeColor = Color.FromArgb(30, 35, 30);
+            lstMao.BorderStyle = BorderStyle.FixedSingle;
+
+            lstMao.DrawItem -= lstMao_DrawItem;
+            lstMao.DrawItem += lstMao_DrawItem;
+        }
+
+        private void AtualizarMaoVisualSimples(Dictionary<string, int> mao)
+        {
+            lstMao.BeginUpdate();
+
+            try
+            {
+                lstMao.Items.Clear();
+
+                if (mao == null || mao.Count == 0)
+                {
+                    lstMao.Items.Add(new MaoVisualItem
+                    {
+                        CodDino = "",
+                        NomeDino = "Sem dinossauros",
+                        Quantidade = 0,
+                        Imagem = null
+                    });
+
+                    return;
+                }
+
+                foreach (var item in mao)
+                {
+                    string codDino = item.Key;
+                    string nomeDino = nomesDinos.ContainsKey(codDino) ? nomesDinos[codDino] : codDino;
+
+                    lstMao.Items.Add(new MaoVisualItem
+                    {
+                        CodDino = codDino,
+                        NomeDino = nomeDino,
+                        Quantidade = item.Value,
+                        Imagem = ObterImagemDino(codDino)
+                    });
+                }
+            }
+            finally
+            {
+                lstMao.EndUpdate();
+            }
+        }
+
+        private void lstMao_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+                return;
+
+            MaoVisualItem item = lstMao.Items[e.Index] as MaoVisualItem;
+
+            if (item == null)
+                return;
+
+            bool selecionado = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            Color corFundo = selecionado ? Color.FromArgb(44, 117, 72) : lstMao.BackColor;
+            Color corTexto = selecionado ? Color.FromArgb(245, 238, 213) : Color.FromArgb(30, 35, 30);
+
+            using (SolidBrush fundo = new SolidBrush(corFundo))
+                e.Graphics.FillRectangle(fundo, e.Bounds);
+
+            int margem = 6;
+            int tamanhoImagem = 30;
+            int xImagem = e.Bounds.Left + margem;
+            int yImagem = e.Bounds.Top + 7;
+
+            if (item.Imagem != null)
+            {
+                e.Graphics.DrawImage(item.Imagem, new Rectangle(xImagem, yImagem, tamanhoImagem, tamanhoImagem));
+            }
+            else
+            {
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(210, 210, 200)))
+                using (Pen pen = new Pen(Color.FromArgb(80, 80, 70)))
+                {
+                    Rectangle ret = new Rectangle(xImagem, yImagem, tamanhoImagem, tamanhoImagem);
+                    e.Graphics.FillRectangle(brush, ret);
+                    e.Graphics.DrawRectangle(pen, ret);
+                }
+            }
+
+            int xTexto = xImagem + tamanhoImagem + 10;
+            int yTexto = e.Bounds.Top + 12;
+
+            string texto = item.Quantidade > 0
+                ? item.NomeDino + " x" + item.Quantidade
+                : item.NomeDino;
+
+            using (SolidBrush textoBrush = new SolidBrush(corTexto))
+                e.Graphics.DrawString(texto, lstMao.Font, textoBrush, xTexto, yTexto);
+
+            e.DrawFocusRectangle();
         }
 
         // LOG
@@ -1885,6 +2009,15 @@ namespace projeto_integrador_entrega1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void lblinfot_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
