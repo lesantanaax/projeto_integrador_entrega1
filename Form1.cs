@@ -59,6 +59,17 @@ namespace projeto_integrador_entrega1
             { "Tr", "Tricerátops" }
         };
 
+
+
+        private Dictionary<string, string> imagensFacesDado = new Dictionary<string, string>
+{
+            { "AL", "AL.png" },
+            { "FL", "FL.png" },
+            { "PR", "PR.png" },
+            { "TI", "TI.png" },
+            { "VZ", "VZ.png" },
+            { "WC", "WC.png" }
+};
         // MODELOS
 
         private class EstadoPartida
@@ -103,13 +114,28 @@ namespace projeto_integrador_entrega1
             public int Total { get; set; }
         }
 
+        private class MaoVisualItem
+        {
+            public string CodDino { get; set; }
+            public string NomeDino { get; set; }
+            public int Quantidade { get; set; }
+            public Image Imagem { get; set; }
+
+            public override string ToString()
+            {
+                return NomeDino + " x" + Quantidade;
+            }
+        }
+
         // CONSTRUTORES
 
         public Form1()
         {
             InitializeComponent();
 
-            label4.Text = Jogo.versao;
+            ConfigurarListaMaoSimples();
+
+            label3.Text = Jogo.versao;
 
             tmrPrincipal.Interval = 5000;
             tmrPrincipal.Tick -= tmrPrincipal_Tick;
@@ -152,20 +178,13 @@ namespace projeto_integrador_entrega1
                     Name = "field_" + cod,
                     Location = kv.Value.Pos,
                     Size = kv.Value.Tam,
-                    BorderStyle = BorderStyle.FixedSingle,
-                    BackColor = Color.FromArgb(60, Color.Green),
+                    BorderStyle = BorderStyle.None,
+                    BackColor = Color.Transparent,
                     FlowDirection = FlowDirection.LeftToRight,
-                    WrapContents = true
+                    WrapContents = true,
+                    Padding = new Padding(2)
                 };
 
-                Label lbl = new Label
-                {
-                    Text = cod,
-                    AutoSize = true,
-                    BackColor = Color.Yellow
-                };
-
-                field.Controls.Add(lbl);
                 pbMapa.Controls.Add(field);
                 field.BringToFront();
 
@@ -193,8 +212,10 @@ namespace projeto_integrador_entrega1
                 {
                     PictureBox pb = new PictureBox
                     {
-                        Size = new Size(30, 30),
-                        SizeMode = PictureBoxSizeMode.StretchImage
+                        Size = new Size(50, 40),
+                        SizeMode = PictureBoxSizeMode.StretchImage,
+                        Margin = new Padding(1),
+                        BackColor = Color.Transparent
                     };
 
                     Image imagem = ObterImagemDino(codDino);
@@ -268,6 +289,97 @@ namespace projeto_integrador_entrega1
             }
         }
 
+        private PictureBox ObterPictureBoxDado()
+        {
+            Control[] controles = this.Controls.Find("pbFaceDado", true);
+
+            if (controles.Length == 0)
+                controles = this.Controls.Find("pbfacedado", true);
+
+            if (controles.Length == 0)
+                return null;
+
+            return controles[0] as PictureBox;
+        }
+
+        private Label ObterLabelDado()
+        {
+            Control[] controles = this.Controls.Find("lblFaceDado", true);
+
+            if (controles.Length == 0)
+                controles = this.Controls.Find("lblfacedado", true);
+
+            if (controles.Length == 0)
+                return null;
+
+            return controles[0] as Label;
+        }
+
+        private void AtualizarImagemDado()
+        {
+            PictureBox pictureBoxDado = ObterPictureBoxDado();
+            Label labelDado = ObterLabelDado();
+
+            if (pictureBoxDado == null || labelDado == null)
+                return;
+
+            if (string.IsNullOrEmpty(faceDadoAtual))
+            {
+                labelDado.Text = "Dado";
+
+                Image imagemAtual = pictureBoxDado.Image;
+                pictureBoxDado.Image = null;
+
+                if (imagemAtual != null)
+                    imagemAtual.Dispose();
+
+                return;
+            }
+
+            string nomeFace = nomesFaces.ContainsKey(faceDadoAtual)
+                ? nomesFaces[faceDadoAtual]
+                : faceDadoAtual;
+
+            labelDado.Text = "Dado: " + nomeFace;
+
+            string pasta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+            string arquivo = imagensFacesDado.ContainsKey(faceDadoAtual) ? imagensFacesDado[faceDadoAtual] : "";
+            string caminho = Path.Combine(pasta, arquivo);
+
+            Image novaImagem = null;
+
+            if (!string.IsNullOrEmpty(arquivo) && File.Exists(caminho))
+                novaImagem = Image.FromFile(caminho);
+            else
+                novaImagem = CriarImagemDadoFallback(faceDadoAtual);
+
+            Image imagemAntiga = pictureBoxDado.Image;
+
+            pictureBoxDado.Image = novaImagem;
+            pictureBoxDado.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            if (imagemAntiga != null)
+                imagemAntiga.Dispose();
+        }
+
+        private Image CriarImagemDadoFallback(string texto)
+        {
+            Bitmap bmp = new Bitmap(90, 90);
+            using (Graphics g = Graphics.FromImage(bmp))
+            using (Font fonte = new Font("Segoe UI", 22, FontStyle.Bold))
+            using (Brush fundo = new SolidBrush(Color.White))
+            using (Brush textoBrush = new SolidBrush(Color.Black))
+            using (Pen borda = new Pen(Color.Black, 3))
+            {
+                g.FillRectangle(fundo, 0, 0, 90, 90);
+                g.DrawRectangle(borda, 4, 4, 82, 82);
+
+                SizeF tam = g.MeasureString(texto, fonte);
+                g.DrawString(texto, fonte, textoBrush, (90 - tam.Width) / 2, (90 - tam.Height) / 2);
+            }
+            return bmp;
+        }
+
         // INICIAR
 
         private void btnIniciar_Click_1(object sender, EventArgs e)
@@ -320,6 +432,7 @@ namespace projeto_integrador_entrega1
         private void IniciarModoAutonomo(string mensagem)
         {
             txtTabuleiro.Clear();
+            lstMao.Items.Clear();
             tickCount = 0;
             processandoTick = false;
             ultimoTurnoComPlacarExibido = 0;
@@ -393,6 +506,7 @@ namespace projeto_integrador_entrega1
                 LogInfoTick("TURNO", "Turno avançou de " + turnoAnterior + " para " + estado.Turno + ".");
 
             AplicarEstadoPartida(estado);
+            AtualizarImagemDado();
 
             List<JogadorInfo> jogadores = CarregarJogadores();
             string nomeDono = BuscarNomeJogador(idJogadorComDado, jogadores);
@@ -442,6 +556,8 @@ namespace projeto_integrador_entrega1
 
             string maoRaw = Jogo.ExibirMao(meuId, minhaSenha);
             Dictionary<string, int> mao = ParsearMaoDetalhada(maoRaw);
+
+            AtualizarMaoVisualSimples(mao);
 
             LogInfoTick("MÃO", FormatarMao(mao));
 
@@ -522,7 +638,7 @@ namespace projeto_integrador_entrega1
                 Turno = turno,
                 StatusTurno = dados[2].Trim(),
                 IdJogadorComDado = idDado,
-                FaceDado = dados[4].Trim()
+                FaceDado = dados[4].Trim(),
             };
 
             return true;
@@ -803,6 +919,112 @@ namespace projeto_integrador_entrega1
             }
 
             return string.Join(", ", partes);
+        }
+
+
+        private void ConfigurarListaMaoSimples()
+        {
+            lstMao.DrawMode = DrawMode.OwnerDrawFixed;
+            lstMao.ItemHeight = 44;
+            lstMao.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lstMao.BackColor = Color.FromArgb(238, 235, 220);
+            lstMao.ForeColor = Color.FromArgb(30, 35, 30);
+            lstMao.BorderStyle = BorderStyle.FixedSingle;
+
+            lstMao.DrawItem -= lstMao_DrawItem;
+            lstMao.DrawItem += lstMao_DrawItem;
+        }
+
+        private void AtualizarMaoVisualSimples(Dictionary<string, int> mao)
+        {
+            lstMao.BeginUpdate();
+
+            try
+            {
+                lstMao.Items.Clear();
+
+                if (mao == null || mao.Count == 0)
+                {
+                    lstMao.Items.Add(new MaoVisualItem
+                    {
+                        CodDino = "",
+                        NomeDino = "Sem dinossauros",
+                        Quantidade = 0,
+                        Imagem = null
+                    });
+
+                    return;
+                }
+
+                foreach (var item in mao)
+                {
+                    string codDino = item.Key;
+                    string nomeDino = nomesDinos.ContainsKey(codDino) ? nomesDinos[codDino] : codDino;
+
+                    lstMao.Items.Add(new MaoVisualItem
+                    {
+                        CodDino = codDino,
+                        NomeDino = nomeDino,
+                        Quantidade = item.Value,
+                        Imagem = ObterImagemDino(codDino)
+                    });
+                }
+            }
+            finally
+            {
+                lstMao.EndUpdate();
+            }
+        }
+
+        private void lstMao_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+                return;
+
+            MaoVisualItem item = lstMao.Items[e.Index] as MaoVisualItem;
+
+            if (item == null)
+                return;
+
+            bool selecionado = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            Color corFundo = selecionado ? Color.FromArgb(44, 117, 72) : lstMao.BackColor;
+            Color corTexto = selecionado ? Color.FromArgb(245, 238, 213) : Color.FromArgb(30, 35, 30);
+
+            using (SolidBrush fundo = new SolidBrush(corFundo))
+                e.Graphics.FillRectangle(fundo, e.Bounds);
+
+            int margem = 6;
+            int tamanhoImagem = 30;
+            int xImagem = e.Bounds.Left + margem;
+            int yImagem = e.Bounds.Top + 7;
+
+            if (item.Imagem != null)
+            {
+                e.Graphics.DrawImage(item.Imagem, new Rectangle(xImagem, yImagem, tamanhoImagem, tamanhoImagem));
+            }
+            else
+            {
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(210, 210, 200)))
+                using (Pen pen = new Pen(Color.FromArgb(80, 80, 70)))
+                {
+                    Rectangle ret = new Rectangle(xImagem, yImagem, tamanhoImagem, tamanhoImagem);
+                    e.Graphics.FillRectangle(brush, ret);
+                    e.Graphics.DrawRectangle(pen, ret);
+                }
+            }
+
+            int xTexto = xImagem + tamanhoImagem + 10;
+            int yTexto = e.Bounds.Top + 12;
+
+            string texto = item.Quantidade > 0
+                ? item.NomeDino + " x" + item.Quantidade
+                : item.NomeDino;
+
+            using (SolidBrush textoBrush = new SolidBrush(corTexto))
+                e.Graphics.DrawString(texto, lstMao.Font, textoBrush, xTexto, yTexto);
+
+            e.DrawFocusRectangle();
         }
 
         // LOG
@@ -1805,6 +2027,25 @@ namespace projeto_integrador_entrega1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void lblinfot_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblFaceDado_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
